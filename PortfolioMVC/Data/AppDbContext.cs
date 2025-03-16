@@ -7,9 +7,9 @@ public class AppDbContext : DbContext
 {
     public AppDbContext(DbContextOptions<AppDbContext> options) : base(options) { }
     
-    public DbSet<Manager> Managers { get; set; }
-    public DbSet<Project> Projects { get; set; }
-    public DbSet<TeamMember> TeamMembers { get; set; }
+    public virtual DbSet<Manager> Managers { get; set; }
+    public virtual DbSet<Project> Projects { get; set; }
+    public virtual DbSet<TeamMember> TeamMembers { get; set; }
 
     protected override void OnModelCreating(ModelBuilder modelBuilder)
     {
