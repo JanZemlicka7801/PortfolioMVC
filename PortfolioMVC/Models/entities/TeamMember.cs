@@ -1,7 +1,7 @@
 ﻿using System.ComponentModel.DataAnnotations;
 using System.ComponentModel.DataAnnotations.Schema;
 
-namespace PortfolioMVC.Models;
+namespace PortfolioMVC.Models.entities;
 
 public class TeamMember
 {

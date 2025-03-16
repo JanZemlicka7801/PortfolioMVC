@@ -1,6 +1,6 @@
 ﻿using System.ComponentModel.DataAnnotations;
 
-namespace PortfolioMVC.Models;
+namespace PortfolioMVC.Models.entities;
 
 public class Manager
 {
