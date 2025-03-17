@@ -1,0 +1,81 @@
+﻿@model PortfolioMVC.Models.DTOs.TeamMemberDto
+
+@{
+    ViewData["Title"] = "Team Member Details";
+}
+
+<div class="container py-4">
+    <div class="d-flex justify-content-between align-items-center mb-4">
+        <h1 class="display-4">Team Member Details</h1>
+        <div>
+            <a asp-action="Edit" asp-route-id="@Model.Id" class="btn btn-primary">Edit</a>
+            <a asp-action="Index" class="btn btn-outline-secondary">Back to List</a>
+        </div>
+    </div>
+
+    <div class="row">
+        <div class="col-md-8">
+            <div class="card shadow mb-4">
+                <div class="card-header bg-light">
+                    <h3 class="card-title mb-0">@Model.Name</h3>
+                </div>
+                <div class="card-body">
+                    <div class="row">
+                        <div class="col-md-6">
+                            <h5>Role</h5>
+                            <p class="lead">@Model.Role.ToString()</p>
+
+                            <h5 class="mt-4">Email</h5>
+                            <p><a href="mailto:@Model.Email">@Model.Email</a></p>
+                        </div>
+                        <div class="col-md-6">
+                            <h5>Project Assignment</h5>
+                            <p>
+                                <a asp-controller="Projects" asp-action="Details" asp-route-id="@Model.ProjectId">
+                                    View Project Details
+                                </a>
+                            </p>
+
+                            <h5 class="mt-4">Team Member ID</h5>
+                            <p>@Model.Id</p>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+        <div class="col-md-4">
+            <div class="card shadow mb-4">
+                <div class="card-header bg-light">
+                    <h5 class="mb-0">Role Description</h5>
+                </div>
+                <div class="card-body">
+                    @{
+                        var roleDescription = Model.Role switch
+                        {
+                            PortfolioMVC.Models.Enums.Role.Developer => "Responsible for coding and implementation of the project's technical features.",
+                            PortfolioMVC.Models.Enums.Role.Analyst => "Analyzes requirements and business processes to ensure project meets business needs.",
+                            PortfolioMVC.Models.Enums.Role.ProjectSponsor => "Executive champion who sponsors the project and ensures organizational support.",
+                            PortfolioMVC.Models.Enums.Role.Architect => "Designs the technical architecture and ensures it meets all requirements.",
+                            PortfolioMVC.Models.Enums.Role.Designer => "Creates UI/UX designs and ensures a great user experience.",
+                            PortfolioMVC.Models.Enums.Role.Tester => "Performs testing and quality assurance to ensure the project meets standards.",
+                            PortfolioMVC.Models.Enums.Role.ScrumMaster => "Facilitates Agile/Scrum processes and removes impediments for the team.",
+                            _ => "Role description not available."
+                        };
+                    }
+                    <p>@roleDescription</p>
+                </div>
+            </div>
+
+            <div class="card shadow">
+                <div class="card-header bg-light">
+                    <h5 class="mb-0">Actions</h5>
+                </div>
+                <div class="card-body">
+                    <div class="d-grid gap-2">
+                        <a asp-controller="TeamMembers" asp-action="Delete" asp-route-id="@Model.Id" class="btn btn-outline-danger">Delete Team Member</a>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>

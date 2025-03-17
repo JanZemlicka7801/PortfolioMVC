@@ -1,0 +1,89 @@
+﻿@model PortfolioMVC.Models.DTOs.TeamMemberDto
+
+@{
+    ViewData["Title"] = "Add Team Member";
+}
+
+<div class="container py-4">
+    <h1 class="display-4 mb-4">Add Team Member</h1>
+
+    <div class="row">
+        <div class="col-md-8">
+            <div class="card shadow">
+                <div class="card-body">
+                    <form asp-action="Create" method="post">
+                        <div asp-validation-summary="ModelOnly" class="text-danger mb-3"></div>
+
+                        <div class="mb-3">
+                            <label asp-for="Name" class="form-label"></label>
+                            <input asp-for="Name" class="form-control" />
+                            <span asp-validation-for="Name" class="text-danger"></span>
+                        </div>
+
+                        <div class="mb-3">
+                            <label asp-for="Email" class="form-label"></label>
+                            <input asp-for="Email" class="form-control" type="email" />
+                            <span asp-validation-for="Email" class="text-danger"></span>
+                        </div>
+
+                        <div class="mb-3">
+                            <label asp-for="Role" class="form-label"></label>
+                            <select asp-for="Role" class="form-select" asp-items="Html.GetEnumSelectList<PortfolioMVC.Models.Enums.Role>()">
+                                <option value="">-- Select Role --</option>
+                            </select>
+                            <span asp-validation-for="Role" class="text-danger"></span>
+                        </div>
+
+                        <div class="mb-3">
+                            <label asp-for="ProjectId" class="form-label">Project</label>
+                            <select asp-for="ProjectId" class="form-select" asp-items="ViewBag.Projects">
+                                <option value="">-- Select Project --</option>
+                            </select>
+                            <span asp-validation-for="ProjectId" class="text-danger"></span>
+                        </div>
+
+                        <div class="d-flex justify-content-between mt-4">
+                            <a asp-action="Index" class="btn btn-outline-secondary">Back to List</a>
+                            <button type="submit" class="btn btn-primary">Create</button>
+                        </div>
+                    </form>
+                </div>
+            </div>
+        </div>
+        <div class="col-md-4">
+            <div class="card shadow">
+                <div class="card-header bg-light">
+                    <h5 class="mb-0">Team Member Roles</h5>
+                </div>
+                <div class="card-body">
+                    <dl>
+                        <dt>Developer</dt>
+                        <dd>Responsible for coding and implementation</dd>
+
+                        <dt>Analyst</dt>
+                        <dd>Analyzes requirements and business processes</dd>
+
+                        <dt>Project Sponsor</dt>
+                        <dd>Person who sponsors the project</dd>
+
+                        <dt>Architect</dt>
+                        <dd>Designs the technical architecture</dd>
+
+                        <dt>Designer</dt>
+                        <dd>Creates UI/UX designs</dd>
+
+                        <dt>Tester</dt>
+                        <dd>Performs testing and quality assurance</dd>
+
+                        <dt>Scrum Master</dt>
+                        <dd>Facilitates Agile/Scrum processes</dd>
+                    </dl>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+@section Scripts {
+    <partial name="_ValidationScriptsPartial" />
+}
