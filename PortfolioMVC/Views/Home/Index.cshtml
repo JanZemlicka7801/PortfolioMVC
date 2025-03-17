@@ -1,8 +1,88 @@
 ﻿@{
-    ViewData["Title"] = "Home Page";
+    ViewData["Title"] = "Home";
 }
 
-<div class="text-center">
-    <h1 class="display-4">Welcome</h1>
-    <p>Learn about <a href="https://learn.microsoft.com/aspnet/core">building Web apps with ASP.NET Core</a>.</p>
+<div class="container py-5">
+    <div class="row align-items-center mb-5">
+        <div class="col-lg-6">
+            <h1 class="display-3 fw-bold mb-3">Portfolio Management System</h1>
+            <p class="lead mb-4">
+                Simplify your project management with our comprehensive portfolio management system. Track projects, manage team members, and monitor progress all in one place.
+            </p>
+            <div class="d-grid gap-2 d-md-flex">
+                @if (User.Identity.IsAuthenticated)
+                {
+                    <a asp-controller="Dashboard" asp-action="Index" class="btn btn-primary btn-lg px-4 me-md-2">Go to Dashboard</a>
+                    <a asp-controller="Projects" asp-action="Index" class="btn btn-outline-secondary btn-lg px-4">View Projects</a>
+                }
+                else
+                {
+                    <a asp-controller="Account" asp-action="Login" class="btn btn-primary btn-lg px-4 me-md-2">Log In</a>
+                    <a asp-controller="Account" asp-action="Register" class="btn btn-outline-secondary btn-lg px-4">Register</a>
+                }
+            </div>
+        </div>
+        <div class="col-lg-6 mt-5 mt-lg-0 text-center">
+            <img src="https://placehold.co/600x400" alt="Portfolio Management Dashboard" class="img-fluid rounded shadow" />
+        </div>
+    </div>
+
+    <hr class="my-5" />
+
+    <div class="row g-4 py-4 row-cols-1 row-cols-md-3">
+        <div class="col">
+            <div class="card h-100 shadow-sm">
+                <div class="card-body">
+                    <div class="text-center mb-3">
+                        <i class="bi bi-folder-check text-primary" style="font-size: 3rem;"></i>
+                    </div>
+                    <h3 class="card-title text-center">Project Management</h3>
+                    <p class="card-text">
+                        Create, track, and manage projects from start to finish. Set timelines, assign team members, and monitor progress.
+                    </p>
+                </div>
+            </div>
+        </div>
+        <div class="col">
+            <div class="card h-100 shadow-sm">
+                <div class="card-body">
+                    <div class="text-center mb-3">
+                        <i class="bi bi-people text-primary" style="font-size: 3rem;"></i>
+                    </div>
+                    <h3 class="card-title text-center">Team Collaboration</h3>
+                    <p class="card-text">
+                        Assign roles, manage team members, and ensure everyone knows their responsibilities for project success.
+                    </p>
+                </div>
+            </div>
+        </div>
+        <div class="col">
+            <div class="card h-100 shadow-sm">
+                <div class="card-body">
+                    <div class="text-center mb-3">
+                        <i class="bi bi-graph-up text-primary" style="font-size: 3rem;"></i>
+                    </div>
+                    <h3 class="card-title text-center">Progress Tracking</h3>
+                    <p class="card-text">
+                        Monitor project status, timelines, and overall portfolio health with intuitive dashboards and reports.
+                    </p>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <div class="text-center mt-5">
+        <h2 class="display-6 mb-4">Ready to get started?</h2>
+        <p class="lead">
+            Join thousands of organizations that use our portfolio management system to streamline their projects.
+        </p>
+        @if (!User.Identity.IsAuthenticated)
+        {
+            <a asp-controller="Account" asp-action="Register" class="btn btn-lg btn-primary mt-3">Create Your Account</a>
+        }
+        else
+        {
+            <a asp-controller="Dashboard" asp-action="Index" class="btn btn-lg btn-primary mt-3">Go to Dashboard</a>
+        }
+    </div>
 </div>
