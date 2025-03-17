@@ -1,0 +1,88 @@
+﻿@model PortfolioMVC.Controllers.Views.ProfileViewModel
+
+@{
+    ViewData["Title"] = "Profile";
+}
+
+<div class="container py-4">
+    <h1 class="display-4 mb-4">Your Profile</h1>
+
+    @if (TempData["SuccessMessage"] != null)
+    {
+        <div class="alert alert-success alert-dismissible fade show" role="alert">
+            @TempData["SuccessMessage"]
+            <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
+        </div>
+    }
+
+    <div class="row">
+        <div class="col-md-4">
+            <div class="card shadow mb-4">
+                <div class="card-body text-center">
+                    <div class="mb-3">
+                        <div class="bg-light d-inline-block rounded-circle p-4 mb-3">
+                            <i class="bi bi-person-circle text-primary" style="font-size: 5rem;"></i>
+                        </div>
+                    </div>
+                    <h3 class="card-title mb-1">@Model.Name</h3>
+                    <p class="text-muted">@Model.Department</p>
+                    <a asp-action="Settings" class="btn btn-outline-primary mt-3">Edit Profile</a>
+                </div>
+            </div>
+
+            <div class="card shadow">
+                <div class="card-header bg-light">
+                    <h5 class="mb-0">Quick Links</h5>
+                </div>
+                <div class="card-body">
+                    <div class="d-grid gap-2">
+                        <a asp-controller="Dashboard" asp-action="Index" class="btn btn-outline-secondary">
+                            <i class="bi bi-speedometer2"></i> Dashboard
+                        </a>
+                        <a asp-controller="Projects" asp-action="Index" class="btn btn-outline-secondary">
+                            <i class="bi bi-folder"></i> My Projects
+                        </a>
+                        <a asp-action="ChangePassword" class="btn btn-outline-secondary">
+                            <i class="bi bi-lock"></i> Change Password
+                        </a>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <div class="col-md-8">
+            <div class="card shadow mb-4">
+                <div class="card-header bg-light">
+                    <h5 class="mb-0">Account Information</h5>
+                </div>
+                <div class="card-body">
+                    <dl class="row">
+                        <dt class="col-sm-3">Full Name</dt>
+                        <dd class="col-sm-9">@Model.Name</dd>
+
+                        <dt class="col-sm-3">Email</dt>
+                        <dd class="col-sm-9">@Model.Email</dd>
+
+                        <dt class="col-sm-3">Department</dt>
+                        <dd class="col-sm-9">@Model.Department</dd>
+
+                        <dt class="col-sm-3">Username</dt>
+                        <dd class="col-sm-9">@Model.UserName</dd>
+
+                        <dt class="col-sm-3">Account ID</dt>
+                        <dd class="col-sm-9"><span class="text-muted">@Model.Id</span></dd>
+                    </dl>
+                </div>
+            </div>
+
+            <div class="card shadow">
+                <div class="card-header bg-light">
+                    <h5 class="mb-0">Your Projects</h5>
+                </div>
+                <div class="card-body">
+                    @await Component.InvokeAsync("UserProjects")
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
