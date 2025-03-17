@@ -1,0 +1,56 @@
+﻿@model IEnumerable<PortfolioMVC.Models.DTOs.ProjectDto>
+
+@if (!Model.Any())
+{
+    <div class="alert alert-info">
+        <p class="mb-0">You don't have any projects yet.</p>
+    </div>
+    <div class="text-center">
+        <a asp-controller="Projects" asp-action="Create" class="btn btn-primary mt-2">Create Your First Project</a>
+    </div>
+}
+else
+{
+    <div class="table-responsive">
+        <table class="table table-hover">
+            <thead class="table-light">
+                <tr>
+                    <th>Name</th>
+                    <th>Start Date</th>
+                    <th>End Date</th>
+                    <th>Status</th>
+                    <th>Action</th>
+                </tr>
+            </thead>
+            <tbody>
+                @foreach (var project in Model)
+                {
+                    var today = DateTime.Today;
+                    var status = "Not Started";
+                    var statusClass = "text-secondary";
+
+                    if (today > project.EndDate)
+                    {
+                        status = "Completed";
+                        statusClass = "text-success";
+                    }
+                    else if (today >= project.StartDate)
+                    {
+                        status = "In Progress";
+                        statusClass = "text-primary";
+                    }
+
+                    <tr>
+                        <td>@project.Name</td>
+                        <td>@project.StartDate.ToString("MMM dd, yyyy")</td>
+                        <td>@project.EndDate.ToString("MMM dd, yyyy")</td>
+                        <td><span class="@statusClass">@status</span></td>
+                        <td>
+                            <a asp-controller="Projects" asp-action="Details" asp-route-id="@project.Id" class="btn btn-sm btn-outline-primary">View</a>
+                        </td>
+                    </tr>
+                }
+            </tbody>
+        </table>
+    </div>
+}
