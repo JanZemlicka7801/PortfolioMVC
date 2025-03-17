@@ -1,4 +1,5 @@
-﻿using Microsoft.AspNetCore.Mvc;
+﻿using Microsoft.AspNetCore.Authorization;
+using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
 using PortfolioMVC.Data;
 using PortfolioMVC.Models.DTOs;
@@ -8,6 +9,7 @@ namespace PortfolioMVC.Controllers
 {
     [Route("api/[controller]")]
     [ApiController]
+    [Authorize]
     public class TeamMemberController : ControllerBase
     {
         private readonly AppDbContext _context;
