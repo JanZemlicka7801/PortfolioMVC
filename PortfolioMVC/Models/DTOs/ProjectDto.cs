@@ -19,5 +19,5 @@ public class ProjectDto
     [DataType(DataType.Date)]
     public DateTime EndDate { get; set; }
     
-    public int ManagerId { get; set; }
+    public string? ManagerId { get; set; }
 }

@@ -1,5 +1,5 @@
 ﻿using System.ComponentModel.DataAnnotations;
-using PortfolioMVC.Models.entities;
+using PortfolioMVC.Models.Enums;
 
 namespace PortfolioMVC.Models.DTOs;
 
