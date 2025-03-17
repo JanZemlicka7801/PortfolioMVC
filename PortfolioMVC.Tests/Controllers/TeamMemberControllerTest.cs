@@ -10,6 +10,7 @@ using PortfolioMVC.Controllers;
 using PortfolioMVC.Data;
 using PortfolioMVC.Models.DTOs;
 using PortfolioMVC.Models.entities;
+using PortfolioMVC.Models.Enums;
 using Xunit;
 
 namespace PortfolioMVC.Tests.Controllers;

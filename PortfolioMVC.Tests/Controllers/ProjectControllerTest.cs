@@ -34,7 +34,7 @@ public class ProjectControllerTest
                 Description = "Description 1", 
                 StartDate = DateTime.Today, 
                 EndDate = DateTime.Today.AddDays(30), 
-                ManagerId = 10 
+                ManagerId = "10" 
             },
             new Project 
             { 
@@ -43,7 +43,7 @@ public class ProjectControllerTest
                 Description = "Description 2", 
                 StartDate = DateTime.Today.AddDays(1), 
                 EndDate = DateTime.Today.AddDays(31), 
-                ManagerId = 20 
+                ManagerId = "20" 
             }
         };
 
@@ -76,7 +76,7 @@ public class ProjectControllerTest
                 Description = "Description 1", 
                 StartDate = DateTime.Today, 
                 EndDate = DateTime.Today.AddDays(30), 
-                ManagerId = 10 
+                ManagerId = "10" 
             },
             new Project 
             { 
@@ -85,7 +85,7 @@ public class ProjectControllerTest
                 Description = "Description 2", 
                 StartDate = DateTime.Today.AddDays(1), 
                 EndDate = DateTime.Today.AddDays(31), 
-                ManagerId = 20 
+                ManagerId = "20" 
             }
         };
 
@@ -143,7 +143,7 @@ public class ProjectControllerTest
             Description = "Some description",
             StartDate = DateTime.Today,
             EndDate = DateTime.Today.AddDays(30),
-            ManagerId = 10
+            ManagerId = "10"
         };
 
         var result = await controller.CreateProject(newProjectDto);
@@ -172,7 +172,7 @@ public class ProjectControllerTest
             Description = "New project description",
             StartDate = DateTime.Today,
             EndDate = DateTime.Today.AddDays(45),
-            ManagerId = 10
+            ManagerId = "10"
         };
 
         var result = await controller.CreateProject(newProjectDto);
@@ -198,7 +198,7 @@ public class ProjectControllerTest
                 Description = "Original Description", 
                 StartDate = DateTime.Today, 
                 EndDate = DateTime.Today.AddDays(30), 
-                ManagerId = 10 
+                ManagerId = "10" 
             }
         };
         var mockContext = new Mock<AppDbContext>(options);
@@ -213,7 +213,7 @@ public class ProjectControllerTest
             Description = "Updated Description",
             StartDate = DateTime.Today.AddDays(1),
             EndDate = DateTime.Today.AddDays(31),
-            ManagerId = 20
+            ManagerId = "20"
         };
 
         var result = await controller.PutProject(1, updateDto);
@@ -241,7 +241,7 @@ public class ProjectControllerTest
             Description = "Updated Description",
             StartDate = DateTime.Today.AddDays(1),
             EndDate = DateTime.Today.AddDays(31),
-            ManagerId = 20
+            ManagerId = "20"
         };
         var result = await controller.PutProject(1, updateDto);
 
@@ -264,7 +264,7 @@ public class ProjectControllerTest
                 Description = "Original Description", 
                 StartDate = DateTime.Today, 
                 EndDate = DateTime.Today.AddDays(30), 
-                ManagerId = 10 
+                ManagerId = "10" 
             }
         };
         
@@ -283,7 +283,7 @@ public class ProjectControllerTest
             Description = "Updated Description",
             StartDate = DateTime.Today.AddDays(1),
             EndDate = DateTime.Today.AddDays(31),
-            ManagerId = 20
+            ManagerId = "20"
         };
         var result = await controller.PutProject(1, updateDto);
         var updatedProject = projects.First();
@@ -330,7 +330,7 @@ public class ProjectControllerTest
                 Description = "Description", 
                 StartDate = DateTime.Today, 
                 EndDate = DateTime.Today.AddDays(30), 
-                ManagerId = 10 
+                ManagerId = "10" 
             }
         };
         
