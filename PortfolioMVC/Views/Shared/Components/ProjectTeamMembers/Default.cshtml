@@ -1,0 +1,40 @@
+﻿@model IEnumerable<PortfolioMVC.Models.DTOs.TeamMemberDto>
+
+@if (!Model.Any())
+{
+    <div class="alert alert-info mt-3">
+        <p class="mb-0">No team members assigned to this project yet.</p>
+    </div>
+}
+else
+{
+    <div class="table-responsive">
+        <table class="table table-hover">
+            <thead class="table-light">
+                <tr>
+                    <th>Name</th>
+                    <th>Role</th>
+                    <th>Email</th>
+                    <th>Actions</th>
+                </tr>
+            </thead>
+            <tbody>
+                @foreach (var member in Model)
+                {
+                    <tr>
+                        <td>@member.Name</td>
+                        <td>@member.Role.ToString()</td>
+                        <td>@member.Email</td>
+                        <td>
+                            <div class="btn-group">
+                                <a asp-controller="TeamMembers" asp-action="Edit" asp-route-id="@member.Id" class="btn btn-sm btn-outline-primary">Edit</a>
+                                <a asp-controller="TeamMembers" asp-action="Details" asp-route-id="@member.Id" class="btn btn-sm btn-outline-info">Details</a>
+                                <a asp-controller="TeamMembers" asp-action="Delete" asp-route-id="@member.Id" class="btn btn-sm btn-outline-danger">Delete</a>
+                            </div>
+                        </td>
+                    </tr>
+                }
+            </tbody>
+        </table>
+    </div>
+}
