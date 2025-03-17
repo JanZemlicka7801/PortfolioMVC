@@ -14,6 +14,10 @@ namespace PortfolioMVC.Services
             _context = context;
         }
 
+        /// <summary>
+        /// Retrieves all team members from the data source.
+        /// </summary>
+        /// <returns>Returns a collection of team members as DTOs.</returns>
         public async Task<IEnumerable<TeamMemberDto>> GetAllTeamMembersAsync()
         {
             var teamMembers = await _context.TeamMembers.ToListAsync();
@@ -27,6 +31,11 @@ namespace PortfolioMVC.Services
             });
         }
 
+        /// <summary>
+        /// Retrieves a team member by their unique identifier.
+        /// </summary>
+        /// <param name="id">The unique identifier of the team member to retrieve.</param>
+        /// <returns>Returns the team member as a DTO if found; otherwise, returns null.</returns>
         public async Task<TeamMemberDto?> GetTeamMemberByIdAsync(int id)
         {
             var teamMember = await _context.TeamMembers.FindAsync(id);
@@ -43,6 +52,11 @@ namespace PortfolioMVC.Services
             };
         }
 
+        /// <summary>
+        /// Creates a new team member and adds it to the data source.
+        /// </summary>
+        /// <param name="teamMemberDto">An object containing the details of the team member to be created.</param>
+        /// <returns>Returns the created team member with the generated unique ID included in the returned DTO.</returns>
         public async Task<TeamMemberDto> CreateTeamMemberAsync(TeamMemberDto teamMemberDto)
         {
             var teamMember = new TeamMember
@@ -61,6 +75,12 @@ namespace PortfolioMVC.Services
             return teamMemberDto;
         }
 
+        /// <summary>
+        /// Updates an existing team member's information based on the provided ID and updated data.
+        /// </summary>
+        /// <param name="id">The ID of the team member to be updated. This must match the ID in the provided data.</param>
+        /// <param name="teamMemberDto">An object containing the updated information for the team member.</param>
+        /// <returns>Returns true if the update was successful; otherwise, returns false if the IDs do not match or the team member is not found.</returns>
         public async Task<bool> UpdateTeamMemberAsync(int id, TeamMemberDto teamMemberDto)
         {
             if (id != teamMemberDto.Id)
@@ -81,6 +101,11 @@ namespace PortfolioMVC.Services
             return true;
         }
 
+        /// <summary>
+        /// Deletes a team member with the specified ID from the database.
+        /// </summary>
+        /// <param name="id">The ID of the team member to be deleted.</param>
+        /// <returns>Returns true if the deletion was successful; otherwise, returns false if the team member is not found.</returns>
         public async Task<bool> DeleteTeamMemberAsync(int id)
         {
             var teamMember = await _context.TeamMembers.FindAsync(id);

@@ -23,6 +23,14 @@ public class AccountController : Controller
         return View();
     }
 
+    /// <summary>
+    /// Handles the registration of a new user.
+    /// </summary>
+    /// <param name="model">The view model containing user registration data such as email, username, password, and other required details.</param>
+    /// <returns>
+    /// Returns a View if the model state is invalid or if the registration process fails.
+    /// Redirects to the "Home/Index" action upon successful user registration.
+    /// </returns>
     [HttpPost]
     [ValidateAntiForgeryToken]
     public async Task<IActionResult> Register(RegisterViewModel model)
@@ -61,6 +69,15 @@ public class AccountController : Controller
         return View();
     }
 
+    /// <summary>
+    /// Handles the login process for a user.
+    /// </summary>
+    /// <param name="model">The view model containing user login data such as email, password, and an optional remember me flag.</param>
+    /// <param name="returnUrl">The URL to redirect the user to upon successful login. Defaults to the application's home page if not provided.</param>
+    /// <returns>
+    /// Returns a View if the login attempt fails or the model state is invalid.
+    /// Redirects to the specified URL or the application's default page upon a successful login.
+    /// </returns>
     [HttpPost]
     [ValidateAntiForgeryToken]
     public async Task<IActionResult> Login(LoginViewModel model, string returnUrl = null)
@@ -82,6 +99,12 @@ public class AccountController : Controller
         }
     }
 
+    /// <summary>
+    /// Logs out the currently signed-in user by ending their session and clearing any authentication cookies.
+    /// </summary>
+    /// <returns>
+    /// Redirects to the "Index" action of the "Home" controller upon successful logout.
+    /// </returns>
     [HttpPost]
     [ValidateAntiForgeryToken]
     public async Task<IActionResult> Logout()
@@ -90,6 +113,15 @@ public class AccountController : Controller
         return RedirectToAction("Index", "Home");
     }
 
+    /// <summary>
+    /// Redirects the user to the specified local URL if the return URL is a valid local URL.
+    /// If the return URL is null or not a local URL, redirects to the "Index" action of the "Home" controller.
+    /// </summary>
+    /// <param name="returnUrl">The return URL to redirect to after a successful action.</param>
+    /// <returns>
+    /// Returns a RedirectResult to the specified local URL if valid,
+    /// or a RedirectToActionResult to the "Index" action of the "Home" controller.
+    /// </returns>
     private IActionResult RedirectToLocal(string returnUrl)
     {
         if (!string.IsNullOrEmpty(returnUrl) && Url.IsLocalUrl(returnUrl))

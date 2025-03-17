@@ -13,6 +13,10 @@ namespace PortfolioMVC.Services
             _context = context;
         }
 
+        /// <summary>
+        /// Retrieves all projects.
+        /// </summary>
+        /// <returns>A task that represents the asynchronous operation. The task result contains a collection of ProjectDto objects representing all projects.</returns>
         public async Task<IEnumerable<ProjectDto>> GetAllProjectsAsync()
         {
             var projects = await _context.Projects.ToListAsync();
@@ -27,6 +31,11 @@ namespace PortfolioMVC.Services
             });
         }
 
+        /// <summary>
+        /// Retrieves a project by its unique identifier.
+        /// </summary>
+        /// <param name="id">The unique identifier of the project to retrieve.</param>
+        /// <returns>A task that represents the asynchronous operation. The task result contains the ProjectDto object if the project is found; otherwise, null.</returns>
         public async Task<ProjectDto?> GetProjectByIdAsync(int id)
         {
             var project = await _context.Projects.FindAsync(id);
@@ -44,6 +53,11 @@ namespace PortfolioMVC.Services
             };
         }
 
+        /// <summary>
+        /// Creates a new project using the details provided in the ProjectDto object.
+        /// </summary>
+        /// <param name="projectDto">The project data transfer object containing the details of the project to be created.</param>
+        /// <returns>A task that represents the asynchronous operation. The task result contains the ProjectDto object with the assigned unique identifier after creation.</returns>
         public async Task<ProjectDto> CreateProjectAsync(ProjectDto projectDto)
         {
             var project = new Project
@@ -63,6 +77,12 @@ namespace PortfolioMVC.Services
             return projectDto;
         }
 
+        /// <summary>
+        /// Updates an existing project with new details provided in the ProjectDto object.
+        /// </summary>
+        /// <param name="id">The unique identifier of the project to be updated.</param>
+        /// <param name="projectDto">The project data transfer object containing the updated project details.</param>
+        /// <returns>A task that represents the asynchronous update operation. The task result contains a boolean value indicating whether the update was successful (true) or the project was not found or the IDs did not match (false).</returns>
         public async Task<bool> UpdateProjectAsync(int id, ProjectDto projectDto)
         {
             if (id != projectDto.Id)
@@ -84,6 +104,11 @@ namespace PortfolioMVC.Services
             return true;
         }
 
+        /// <summary>
+        /// Deletes a project by its unique identifier.
+        /// </summary>
+        /// <param name="id">The unique identifier of the project to be deleted.</param>
+        /// <returns>A task that represents the asynchronous delete operation. The task result contains a boolean value indicating whether the deletion was successful (true) or the project was not found (false).</returns>
         public async Task<bool> DeleteProjectAsync(int id)
         {
             var project = await _context.Projects.FindAsync(id);
