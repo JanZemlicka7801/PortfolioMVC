@@ -1,4 +1,6 @@
-﻿using Microsoft.AspNetCore.Identity;
+﻿using Microsoft.AspNetCore.Authorization;
+using System.Security.Claims;
+using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Mvc;
 using PortfolioMVC.Controllers.Views;
 using PortfolioMVC.Models.entities;
@@ -111,6 +113,138 @@ public class AccountController : Controller
     {
         await _signInManager.SignOutAsync();
         return RedirectToAction("Index", "Home");
+    }
+
+
+    [Authorize]
+    public async Task<IActionResult> Profile()
+    {
+        var userId = User.FindFirstValue(ClaimTypes.NameIdentifier);
+        var user = await _userManager.FindByIdAsync(userId);
+
+        if (user == null)
+        {
+            return NotFound();
+        }
+
+        var model = new ProfileViewModel
+        {
+            Id = user.Id,
+            Name = user.Name,
+            Email = user.Email,
+            Department = user.Department,
+            UserName = user.UserName
+        };
+
+        return View(model);
+    }
+
+    [Authorize]
+    [HttpGet]
+    public async Task<IActionResult> Settings()
+    {
+        var userId = User.FindFirstValue(ClaimTypes.NameIdentifier);
+        var user = await _userManager.FindByIdAsync(userId);
+
+        if (user == null)
+        {
+            return NotFound();
+        }
+
+        var model = new SettingsViewModel
+        {
+            Name = user.Name,
+            Email = user.Email,
+            Department = user.Department
+        };
+
+        return View(model);
+    }
+
+    [Authorize]
+    [HttpPost]
+    [ValidateAntiForgeryToken]
+    public async Task<IActionResult> Settings(SettingsViewModel model)
+    {
+        if (!ModelState.IsValid)
+        {
+            return View(model);
+        }
+
+        var userId = User.FindFirstValue(ClaimTypes.NameIdentifier);
+        var user = await _userManager.FindByIdAsync(userId);
+
+        if (user == null)
+        {
+            return NotFound();
+        }
+
+        user.Name = model.Name;
+        user.Department = model.Department;
+
+        if (user.Email != model.Email)
+        {
+            user.Email = model.Email;
+            user.UserName = model.Email;
+            user.NormalizedEmail = model.Email.ToUpper();
+            user.NormalizedUserName = model.Email.ToUpper();
+        }
+
+        var result = await _userManager.UpdateAsync(user);
+
+        if (result.Succeeded)
+        {
+            TempData["SuccessMessage"] = "Your profile has been updated successfully.";
+            return RedirectToAction(nameof(Profile));
+        }
+
+        foreach (var error in result.Errors)
+        {
+            ModelState.AddModelError("", error.Description);
+        }
+
+        return View(model);
+    }
+
+    [Authorize]
+    [HttpGet]
+    public IActionResult ChangePassword()
+    {
+        return View();
+    }
+
+    [Authorize]
+    [HttpPost]
+    [ValidateAntiForgeryToken]
+    public async Task<IActionResult> ChangePassword(ChangePasswordViewModel model)
+    {
+        if (!ModelState.IsValid)
+        {
+            return View(model);
+        }
+
+        var userId = User.FindFirstValue(ClaimTypes.NameIdentifier);
+        var user = await _userManager.FindByIdAsync(userId);
+
+        if (user == null)
+        {
+            return NotFound();
+        }
+
+        var result = await _userManager.ChangePasswordAsync(user, model.CurrentPassword, model.NewPassword);
+
+        if (result.Succeeded)
+        {
+            TempData["SuccessMessage"] = "Your password has been changed successfully.";
+            return RedirectToAction(nameof(Settings));
+        }
+
+        foreach (var error in result.Errors)
+        {
+            ModelState.AddModelError("", error.Description);
+        }
+
+        return View(model);
     }
 
     /// <summary>
