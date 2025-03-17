@@ -1,31 +1,110 @@
 html {
-  font-size: 14px;
-}
-
-@media (min-width: 768px) {
-  html {
-    font-size: 16px;
-  }
-}
-
-.btn:focus, .btn:active:focus, .btn-link.nav-link:focus, .form-control:focus, .form-check-input:focus {
-  box-shadow: 0 0 0 0.1rem white, 0 0 0 0.25rem #258cfb;
-}
-
-html {
-  position: relative;
-  min-height: 100%;
+    position: relative;
+    min-height: 100%;
 }
 
 body {
-  margin-bottom: 60px;
+    margin-bottom: 60px;
+    background-color: #f8f9fa;
+    color: #212529;
 }
 
-.form-floating > .form-control-plaintext::placeholder, .form-floating > .form-control::placeholder {
-  color: var(--bs-secondary-color);
-  text-align: end;
+.footer {
+    position: absolute;
+    bottom: 0;
+    width: 100%;
+    white-space: nowrap;
+    line-height: 60px;
 }
 
-.form-floating > .form-control-plaintext:focus::placeholder, .form-floating > .form-control:focus::placeholder {
-  text-align: start;
+.card {
+    transition: transform 0.2s, box-shadow 0.2s;
+}
+
+    .card:hover {
+        transform: translateY(-5px);
+        box-shadow: 0 .5rem 1rem rgba(0,0,0,.15) !important;
+    }
+
+.btn {
+    border-radius: 0.25rem;
+}
+
+.btn-primary {
+    background-color: #0d6efd;
+    border-color: #0d6efd;
+}
+
+    .btn-primary:hover {
+        background-color: #0b5ed7;
+        border-color: #0a58ca;
+    }
+
+.table thead th {
+    font-weight: 600;
+    border-top: none;
+}
+
+.table-hover tbody tr:hover {
+    background-color: rgba(13, 110, 253, 0.05);
+}
+
+.form-control:focus {
+    border-color: #0d6efd;
+    box-shadow: 0 0 0 0.25rem rgba(13, 110, 253, 0.25);
+}
+
+.card.bg-primary, .card.bg-success, .card.bg-info {
+    transition: transform 0.2s;
+}
+
+    .card.bg-primary:hover, .card.bg-success:hover, .card.bg-info:hover {
+        transform: translateY(-5px);
+    }
+
+.navbar-nav .nav-link.active {
+    font-weight: bold;
+}
+
+.alert {
+    border-radius: 0.25rem;
+    border: none;
+}
+
+.text-success, .text-primary, .text-secondary {
+    font-weight: 600;
+}
+
+.section-title {
+    margin-bottom: 1.5rem;
+    font-weight: 600;
+}
+
+.badge {
+    font-weight: 500;
+    padding: 0.35em 0.65em;
+}
+
+.dropdown-menu {
+    border-radius: 0.25rem;
+    box-shadow: 0 0.5rem 1rem rgba(0, 0, 0, 0.15);
+    border: none;
+}
+
+.dropdown-item:active {
+    background-color: #0d6efd;
+}
+
+.bi {
+    margin-right: 0.25rem;
+}
+
+@media (max-width: 768px) {
+    .display-3 {
+        font-size: 2.5rem;
+    }
+
+    .display-4 {
+        font-size: 2rem;
+    }
 }
