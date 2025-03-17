@@ -11,19 +11,29 @@ builder.Services.AddDbContext<AppDbContext>(opt =>
         new MySqlServerVersion(new Version(10, 4, 28))));
 
 builder.Services.AddIdentity<AppUser, IdentityRole>(options =>
-    {
-        // Configured the password to be 12 characters and needs to contain digits as bellow
-        options.Password.RequireDigit = true;
-        options.Password.RequiredLength = 12;
-        options.Password.RequireUppercase = true;
-        options.Password.RequireLowercase = true;
-        options.Password.RequireNonAlphanumeric = false;
-    })
+{
+    // Configured the password to be 12 characters and needs to contain digits as bellow
+    options.Password.RequireDigit = true;
+    options.Password.RequiredLength = 12;
+    options.Password.RequireUppercase = true;
+    options.Password.RequireLowercase = true;
+    options.Password.RequireNonAlphanumeric = false;
+})
     .AddEntityFrameworkStores<AppDbContext>()
     .AddDefaultTokenProviders();
 
 builder.Services.AddScoped<IProjectService, ProjectService>();
 builder.Services.AddScoped<ITeamMemberService, TeamMemberService>();
+
+// Cofigure authentication cookie
+builder.Services.ConfigureApplicationCookie(options =>
+{
+    options.LoginPath = "/Account/Login";
+    options.LogoutPath = "/Account/Logout";
+    options.AccessDeniedPath = "/Account/AccessDenied";
+    options.SlidingExpiration = true;
+    options.ExpireTimeSpan = TimeSpan.FromHours(1);
+});
 
 // Add services to the container.
 builder.Services.AddControllersWithViews();
@@ -39,17 +49,14 @@ if (!app.Environment.IsDevelopment())
 }
 
 app.UseHttpsRedirection();
+app.UseStaticFiles();
 app.UseRouting();
 
-app.UseAuthorization();
 app.UseAuthentication();
-
-app.MapStaticAssets();
+app.UseAuthorization();
 
 app.MapControllerRoute(
-        name: "default",
-        pattern: "{controller=Home}/{action=Index}/{id?}")
-    .WithStaticAssets();
-
+    name: "default",
+    pattern: "{controller=Home}/{action=Index}/{id?}");
 
 app.Run();
