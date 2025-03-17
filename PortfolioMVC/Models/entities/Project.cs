@@ -21,7 +21,7 @@ public class Project
     [DataType(DataType.Date)]
     public DateTime EndDate { get; set; }
     
-    [ForeignKey("Manager")]
-    public int ManagerId { get; set; }
-    public Manager? Manager { get; set; }
+    [ForeignKey("AppUser")]
+    public string? ManagerId { get; set; }
+    public AppUser? Manager { get; set; }
 }

@@ -1,5 +1,6 @@
 ﻿using System.ComponentModel.DataAnnotations;
 using System.ComponentModel.DataAnnotations.Schema;
+using PortfolioMVC.Models.Enums;
 
 namespace PortfolioMVC.Models.entities;
 
@@ -23,15 +24,4 @@ public class TeamMember
     [ForeignKey("Project")]
     public int ProjectId { get; set; }
     public Project? Project { get; set; }
-}
-
-public enum Role
-{
-    Developer,
-    Analyst,
-    ProjectSponsor,
-    Architect,
-    Designer,
-    Tester,
-    ScrumMaster
 }
