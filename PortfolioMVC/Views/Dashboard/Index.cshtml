@@ -1,0 +1,156 @@
+﻿@model IEnumerable<PortfolioMVC.Models.entities.Project>
+
+@{
+    ViewData["Title"] = "Dashboard";
+}
+
+<div class="container py-4">
+    <div class="mb-4">
+        <h1 class="display-4">Welcome, @ViewBag.UserName</h1>
+        <p class="lead">Department: @ViewBag.Department</p>
+    </div>
+
+    <div class="row mb-4">
+        <div class="col-md-4">
+            <div class="card bg-primary text-white shadow">
+                <div class="card-body">
+                    <h5 class="card-title">Total Projects</h5>
+                    <p class="display-4 mb-0">@ViewBag.ProjectCount</p>
+                </div>
+                <div class="card-footer d-flex align-items-center justify-content-between">
+                    <a asp-controller="Projects" asp-action="Index" class="text-white">View Projects</a>
+                    <span><i class="bi bi-arrow-right"></i></span>
+                </div>
+            </div>
+        </div>
+
+        <div class="col-md-4">
+            <div class="card bg-success text-white shadow">
+                <div class="card-body">
+                    <h5 class="card-title">Team Members</h5>
+                    <p class="display-4 mb-0">@ViewBag.TeamMemberCount</p>
+                </div>
+                <div class="card-footer d-flex align-items-center justify-content-between">
+                    <a asp-controller="TeamMembers" asp-action="Index" class="text-white">View Team Members</a>
+                    <span><i class="bi bi-arrow-right"></i></span>
+                </div>
+            </div>
+        </div>
+
+        <div class="col-md-4">
+            <div class="card bg-info text-white shadow">
+                <div class="card-body">
+                    <h5 class="card-title">Your Projects</h5>
+                    <p class="display-4 mb-0">@(ViewBag.UserProjects?.Count ?? 0)</p>
+                </div>
+                <div class="card-footer d-flex align-items-center justify-content-between">
+                    <a asp-controller="Projects" asp-action="Index" class="text-white">Manage Your Projects</a>
+                    <span><i class="bi bi-arrow-right"></i></span>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <div class="row">
+        <div class="col-md-8">
+            <div class="card shadow mb-4">
+                <div class="card-header bg-light d-flex justify-content-between align-items-center">
+                    <h4 class="mb-0">Recent Projects</h4>
+                    <a asp-controller="Projects" asp-action="Create" class="btn btn-sm btn-primary">Add New Project</a>
+                </div>
+                <div class="card-body">
+                    @if (!Model.Any())
+                    {
+                        <div class="alert alert-info">
+                            <p class="mb-0">No projects found. Click 'Add New Project' to create one.</p>
+                        </div>
+                    }
+                    else
+                    {
+                        <div class="table-responsive">
+                            <table class="table table-hover">
+                                <thead class="table-light">
+                                    <tr>
+                                        <th>Name</th>
+                                        <th>Start Date</th>
+                                        <th>End Date</th>
+                                        <th>Status</th>
+                                        <th>Actions</th>
+                                    </tr>
+                                </thead>
+                                <tbody>
+                                    @foreach (var project in Model)
+                                    {
+                                        var today = DateTime.Today;
+                                        var status = "Not Started";
+                                        var statusClass = "text-secondary";
+
+                                        if (today > project.EndDate)
+                                        {
+                                            status = "Completed";
+                                            statusClass = "text-success";
+                                        }
+                                        else if (today >= project.StartDate)
+                                        {
+                                            status = "In Progress";
+                                            statusClass = "text-primary";
+                                        }
+
+                                        <tr>
+                                            <td>@project.Name</td>
+                                            <td>@project.StartDate.ToString("MMM dd, yyyy")</td>
+                                            <td>@project.EndDate.ToString("MMM dd, yyyy")</td>
+                                            <td><span class="@statusClass">@status</span></td>
+                                            <td>
+                                                <a asp-controller="Projects" asp-action="Details" asp-route-id="@project.Id" class="btn btn-sm btn-outline-primary">View</a>
+                                            </td>
+                                        </tr>
+                                    }
+                                </tbody>
+                            </table>
+                        </div>
+                    }
+                </div>
+            </div>
+        </div>
+
+        <div class="col-md-4">
+            <div class="card shadow mb-4">
+                <div class="card-header bg-light">
+                    <h4 class="mb-0">Quick Actions</h4>
+                </div>
+                <div class="card-body">
+                    <div class="d-grid gap-3">
+                        <a asp-controller="Projects" asp-action="Create" class="btn btn-outline-primary">Create New Project</a>
+                        <a asp-controller="TeamMembers" asp-action="Create" class="btn btn-outline-success">Add Team Member</a>
+                        <a asp-controller="Projects" asp-action="Index" class="btn btn-outline-info">View All Projects</a>
+                        <a asp-controller="TeamMembers" asp-action="Index" class="btn btn-outline-secondary">View All Team Members</a>
+                    </div>
+                </div>
+            </div>
+
+            <div class="card shadow">
+                <div class="card-header bg-light">
+                    <h4 class="mb-0">Resources</h4>
+                </div>
+                <div class="card-body">
+                    <ul class="list-group list-group-flush">
+                        <li class="list-group-item d-flex justify-content-between align-items-center">
+                            Project Documentation
+                            <span class="badge bg-primary rounded-pill">New</span>
+                        </li>
+                        <li class="list-group-item d-flex justify-content-between align-items-center">
+                            Team Guidelines
+                        </li>
+                        <li class="list-group-item d-flex justify-content-between align-items-center">
+                            Best Practices
+                        </li>
+                        <li class="list-group-item d-flex justify-content-between align-items-center">
+                            Support & Help
+                        </li>
+                    </ul>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
