@@ -1,0 +1,153 @@
+﻿@model IEnumerable<PortfolioMVC.Models.DTOs.OrderDto>
+
+@{
+    ViewData["Title"] = "Manage Orders";
+}
+
+<div class="container py-4">
+    <h1 class="display-4 mb-4">Manage Orders</h1>
+
+    <div class="card shadow">
+        <div class="card-header bg-light">
+            <div class="d-flex justify-content-between align-items-center">
+                <h3 class="mb-0">All Orders</h3>
+                <div>
+                    <button class="btn btn-outline-primary" type="button" data-bs-toggle="collapse" data-bs-target="#filterPanel">
+                        <i class="bi bi-funnel"></i> Filter
+                    </button>
+                </div>
+            </div>
+        </div>
+
+        <div class="collapse" id="filterPanel">
+            <div class="card-body bg-light border-bottom">
+                <div class="row g-3">
+                    <div class="col-md-4">
+                        <label class="form-label">Status</label>
+                        <select class="form-select" id="statusFilter">
+                            <option value="">All Statuses</option>
+                            <option value="Pending">Pending</option>
+                            <option value="Processing">Processing</option>
+                            <option value="Completed">Completed</option>
+                            <option value="Cancelled">Cancelled</option>
+                        </select>
+                    </div>
+                    <div class="col-md-4">
+                        <label class="form-label">Date From</label>
+                        <input type="date" class="form-control" id="dateFrom">
+                    </div>
+                    <div class="col-md-4">
+                        <label class="form-label">Date To</label>
+                        <input type="date" class="form-control" id="dateTo">
+                    </div>
+                    <div class="col-12 d-flex justify-content-end">
+                        <button class="btn btn-primary" id="applyFilter">Apply Filters</button>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <div class="card-body">
+            @if (!Model.Any())
+            {
+                <div class="alert alert-info">
+                    <p class="mb-0">No orders found.</p>
+                </div>
+            }
+            else
+            {
+                <div class="table-responsive">
+                    <table class="table table-hover">
+                        <thead class="table-light">
+                            <tr>
+                                <th>Order Number</th>
+                                <th>Date</th>
+                                <th>Customer</th>
+                                <th>Total</th>
+                                <th>Status</th>
+                                <th>Actions</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            @foreach (var order in Model)
+                            {
+                                <tr>
+                                    <td>@order.OrderNumber</td>
+                                    <td>@order.OrderDate.ToString("MMM dd, yyyy HH:mm")</td>
+                                    <td>@order.UserId</td>
+                                    <td>$@order.TotalAmount.ToString("F2")</td>
+                                    <td>
+                                        @{
+                                            var statusClass = order.Status switch
+                                            {
+                                                PortfolioMVC.Models.Enums.OrderStatus.Pending => "bg-warning",
+                                                PortfolioMVC.Models.Enums.OrderStatus.Processing => "bg-primary",
+                                                PortfolioMVC.Models.Enums.OrderStatus.Completed => "bg-success",
+                                                PortfolioMVC.Models.Enums.OrderStatus.Cancelled => "bg-danger",
+                                                _ => "bg-secondary"
+                                            };
+                                        }
+                                        <span class="badge @statusClass">@order.Status</span>
+                                    </td>
+                                    <td>
+                                        <div class="btn-group">
+                                            <a asp-action="Details" asp-route-id="@order.Id" class="btn btn-sm btn-outline-info">
+                                                <i class="bi bi-eye"></i>
+                                            </a>
+                                            <button type="button" class="btn btn-sm btn-outline-primary" data-bs-toggle="modal" data-bs-target="#updateStatusModal-@order.Id">
+                                                <i class="bi bi-pencil"></i>
+                                            </button>
+                                        </div>
+
+                                        <div class="modal fade" id="updateStatusModal-@order.Id" tabindex="-1" aria-labelledby="updateStatusModalLabel-@order.Id" aria-hidden="true">
+                                            <div class="modal-dialog">
+                                                <div class="modal-content">
+                                                    <form asp-action="UpdateStatus" method="post">
+                                                        <input type="hidden" name="orderId" value="@order.Id" />
+                                                        <div class="modal-header">
+                                                            <h5 class="modal-title" id="updateStatusModalLabel-@order.Id">Update Order Status</h5>
+                                                            <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                                                        </div>
+                                                        <div class="modal-body">
+                                                            <div class="mb-3">
+                                                                <label class="form-label">Order Number</label>
+                                                                <input type="text" class="form-control" value="@order.OrderNumber" readonly />
+                                                            </div>
+                                                            <div class="mb-3">
+                                                                <label class="form-label">Current Status</label>
+                                                                <input type="text" class="form-control" value="@order.Status" readonly />
+                                                            </div>
+                                                            <div class="mb-3">
+                                                                <label class="form-label">New Status</label>
+                                                                   <select name="status" class="form-select">
+                                                                        <option value="@PortfolioMVC.Models.Enums.OrderStatus.Pending" selected="@(order.Status == PortfolioMVC.Models.Enums.OrderStatus.Pending)">Pending</option>
+                                                                        <option value="@PortfolioMVC.Models.Enums.OrderStatus.Processing" selected="@(order.Status == PortfolioMVC.Models.Enums.OrderStatus.Processing)">Processing</option>
+                                                                        <option value="@PortfolioMVC.Models.Enums.OrderStatus.Completed" selected="@(order.Status == PortfolioMVC.Models.Enums.OrderStatus.Completed)">Completed</option>
+                                                                        <option value="@PortfolioMVC.Models.Enums.OrderStatus.Cancelled" selected="@(order.Status == PortfolioMVC.Models.Enums.OrderStatus.Cancelled)">Cancelled</option>
+                                                                    </select>
+                                                            </div>
+                                                        </div>
+                                                        <div class="modal-footer">
+                                                            <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Cancel</button>
+                                                            <button type="submit" class="btn btn-primary">Update Status</button>
+                                                        </div>
+                                                    </form>
+                                                </div>
+                                            </div>
+                                        </div>
+                                    </td>
+                                </tr>
+                            }
+                        </tbody>
+                    </table>
+                </div>
+            }
+        </div>
+    </div>
+
+    <div class="d-flex justify-content-end mt-4">
+        <a asp-controller="Dashboard" asp-action="Index" class="btn btn-outline-secondary">
+            <i class="bi bi-speedometer2"></i> Back to Dashboard
+        </a>
+    </div>
+</div>

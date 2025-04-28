@@ -112,6 +112,22 @@
                     }
                 </div>
             </div>
+            <div class="card shadow mb-4">
+                <div class="card-header bg-light">
+                    <h4 class="mb-0">Store Management</h4>
+                </div>
+                <div class="card-body">
+                    <div class="d-grid gap-3">
+                        <a asp-controller="ProductsStore" asp-action="MyProducts" class="btn btn-outline-primary">My Products</a>
+                        <a asp-controller="ProductsStore" asp-action="Create" class="btn btn-outline-success">Add New Product</a>
+                        @if (User.IsInRole("Admin"))
+                        {
+                            <a asp-controller="ProductsStore" asp-action="ManageProducts" class="btn btn-outline-info">Manage All Products</a>
+                            <a asp-controller="Orders" asp-action="ManageOrders" class="btn btn-outline-secondary">Manage Orders</a>
+                        }
+                    </div>
+                </div>
+            </div>
         </div>
 
         <div class="col-md-4">
@@ -125,6 +141,9 @@
                         <a asp-controller="TeamMembers" asp-action="Create" class="btn btn-outline-success">Add Team Member</a>
                         <a asp-controller="Projects" asp-action="Index" class="btn btn-outline-info">View All Projects</a>
                         <a asp-controller="TeamMembers" asp-action="Index" class="btn btn-outline-secondary">View All Team Members</a>
+                        <a asp-controller="ProductsStore" asp-action="Index" class="btn btn-outline-info">Browse Store</a>
+                        <a asp-controller="ShoppingCart" asp-action="Index" class="btn btn-outline-primary">View Cart</a>
+                        <a asp-controller="Orders" asp-action="Index" class="btn btn-outline-secondary">My Orders</a>
                     </div>
                 </div>
             </div>

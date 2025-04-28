@@ -1,0 +1,95 @@
+﻿@model PortfolioMVC.Models.DTOs.OrderDto
+
+@{
+    ViewData["Title"] = "Order Confirmation";
+}
+
+<div class="container py-4">
+    <div class="card shadow mb-4 border-success">
+        <div class="card-header bg-success text-white">
+            <div class="d-flex align-items-center">
+                <i class="bi bi-check-circle-fill me-3" style="font-size: 2rem;"></i>
+                <h2 class="mb-0">Order Confirmed</h2>
+            </div>
+        </div>
+        <div class="card-body py-5">
+            <div class="text-center mb-4">
+                <i class="bi bi-bag-check text-success mb-3" style="font-size: 4rem;"></i>
+                <h3 class="mb-3">Thank you for your order!</h3>
+                <p class="lead mb-0">Your order has been successfully placed.</p>
+            </div>
+
+            <div class="row justify-content-center mt-5">
+                <div class="col-md-8">
+                    <div class="card mb-4">
+                        <div class="card-header bg-light">
+                            <h4 class="mb-0">Order Details</h4>
+                        </div>
+                        <div class="card-body">
+                            <dl class="row mb-0">
+                                <dt class="col-sm-4">Order Number:</dt>
+                                <dd class="col-sm-8">@Model.OrderNumber</dd>
+
+                                <dt class="col-sm-4">Order Date:</dt>
+                                <dd class="col-sm-8">@Model.OrderDate.ToString("MMMM dd, yyyy HH:mm")</dd>
+
+                                <dt class="col-sm-4">Total Amount:</dt>
+                                <dd class="col-sm-8">$@Model.TotalAmount.ToString("F2")</dd>
+
+                                <dt class="col-sm-4">Status:</dt>
+                                <dd class="col-sm-8"><span class="badge bg-primary">@Model.Status</span></dd>
+                            </dl>
+                        </div>
+                    </div>
+
+                    <div class="card">
+                        <div class="card-header bg-light">
+                            <h4 class="mb-0">Order Items</h4>
+                        </div>
+                        <div class="card-body">
+                            <div class="table-responsive">
+                                <table class="table">
+                                    <thead class="table-light">
+                                        <tr>
+                                            <th>Product</th>
+                                            <th>Price</th>
+                                            <th>Quantity</th>
+                                            <th>Total</th>
+                                        </tr>
+                                    </thead>
+                                    <tbody>
+                                        @foreach (var item in Model.OrderItems)
+                                        {
+                                            <tr>
+                                                <td>@item.ProductName</td>
+                                                <td>$@item.Price.ToString("F2")</td>
+                                                <td>@item.Quantity</td>
+                                                <td>$@item.TotalPrice.ToString("F2")</td>
+                                            </tr>
+                                        }
+                                    </tbody>
+                                    <tfoot class="table-light">
+                                        <tr>
+                                            <th colspan="3" class="text-end">Total:</th>
+                                            <th>$@Model.TotalAmount.ToString("F2")</th>
+                                        </tr>
+                                    </tfoot>
+                                </table>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+        <div class="card-footer bg-light">
+            <div class="d-flex justify-content-between">
+                <a asp-controller="ProductsStore" asp-action="Index" class="btn btn-primary">
+                    <i class="bi bi-cart-plus"></i> Continue Shopping
+                </a>
+                <a asp-controller="Orders" asp-action="Index" class="btn btn-outline-secondary">
+                    <i class="bi bi-list-ul"></i> View All Orders
+                </a>
+            </div>
+        </div>
+    </div>
+</div>

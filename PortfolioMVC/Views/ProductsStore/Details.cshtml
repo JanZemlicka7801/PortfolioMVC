@@ -1,0 +1,124 @@
+﻿@using System.Security.Claims
+@model PortfolioMVC.Models.DTOs.ProductDto
+
+@{
+    ViewData["Title"] = "Product Details";
+}
+
+<div class="container py-4">
+    <nav aria-label="breadcrumb" class="mb-4">
+        <ol class="breadcrumb">
+            <li class="breadcrumb-item"><a asp-action="Index">Store</a></li>
+            <li class="breadcrumb-item active" aria-current="page">@Model.Name</li>
+        </ol>
+    </nav>
+
+    <div class="row">
+        <div class="col-md-5 mb-4 mb-md-0">
+            <div class="card shadow">
+                @if (string.IsNullOrEmpty(Model.ImageUrl))
+                {
+                    <div class="bg-light text-center py-5" style="height: 400px;">
+                        <i class="bi bi-image text-secondary" style="font-size: 8rem;"></i>
+                    </div>
+                }
+                else
+                {
+                    <img src="@Model.ImageUrl" class="card-img-top" style="height: 400px; object-fit: cover;" alt="@Model.Name">
+                }
+            </div>
+        </div>
+        <div class="col-md-7">
+            <div class="card shadow">
+                <div class="card-header bg-light">
+                    <h1 class="card-title h2 mb-0">@Model.Name</h1>
+                </div>
+                <div class="card-body">
+                    <div class="mb-4">
+                        <div class="d-flex justify-content-between align-items-center">
+                            <h3 class="text-primary">$@Model.Price.ToString("F2")</h3>
+                            <div>
+                                <span class="badge bg-info text-dark me-2">@Model.Category</span>
+                                @if (Model.IsAvailable)
+                                {
+                                    <span class="badge bg-success">Available</span>
+                                }
+                                else
+                                {
+                                    <span class="badge bg-danger">Unavailable</span>
+                                }
+                            </div>
+                        </div>
+                    </div>
+
+                    <hr />
+
+                    <div class="mb-4">
+                        <h4>Product Description</h4>
+                        <p>@(string.IsNullOrEmpty(Model.Description) ? "No description available." : Model.Description)</p>
+                    </div>
+
+                    @if (User.Identity.IsAuthenticated && Model.IsAvailable)
+                    {
+                        <hr />
+
+                        <form asp-controller="ShoppingCart" asp-action="AddToCart" method="post">
+                            <input type="hidden" name="productId" value="@Model.Id" />
+
+                            <div class="row align-items-center mb-4">
+                                <div class="col-md-3">
+                                    <label for="quantity" class="form-label">Quantity:</label>
+                                    <select name="quantity" id="quantity" class="form-select">
+                                        @for (int i = 1; i <= 10; i++)
+                                        {
+                                            <option value="@i">@i</option>
+                                        }
+                                    </select>
+                                </div>
+                                <div class="col-md-9">
+                                    <div class="d-grid gap-2 d-md-flex">
+                                        <button type="submit" class="btn btn-primary btn-lg">
+                                            <i class="bi bi-cart-plus"></i> Add to Cart
+                                        </button>
+                                        <a asp-controller="ShoppingCart" asp-action="Index" class="btn btn-outline-secondary btn-lg">
+                                            <i class="bi bi-cart"></i> View Cart
+                                        </a>
+                                    </div>
+                                </div>
+                            </div>
+                        </form>
+                    }
+                    else if (!User.Identity.IsAuthenticated)
+                    {
+                        <div class="alert alert-info mb-0">
+                            <p class="mb-0">Please <a asp-controller="Account" asp-action="Login">login</a> to add this product to your cart.</p>
+                        </div>
+                    }
+                    else if (!Model.IsAvailable)
+                    {
+                        <div class="alert alert-danger mb-0">
+                            <p class="mb-0">This product is currently unavailable.</p>
+                        </div>
+                    }
+                </div>
+                <div class="card-footer bg-white d-flex justify-content-between">
+                    <a asp-action="Index" class="btn btn-outline-secondary">
+                        <i class="bi bi-arrow-left"></i> Back to Store
+                    </a>
+
+                    @if (User.Identity.IsAuthenticated && (Model.CreatedById == User.FindFirstValue(System.Security.Claims.ClaimTypes.NameIdentifier) || User.IsInRole("Admin")))
+                    {
+                        <div>
+                            <a asp-action="Edit" asp-route-id="@Model.Id" class="btn btn-outline-primary">
+                                <i class="bi bi-pencil"></i> Edit
+                            </a>
+                            <a asp-action="Delete" asp-route-id="@Model.Id" class="btn btn-outline-danger">
+                                <i class="bi bi-trash"></i> Delete
+                            </a>
+                        </div>
+                    }
+                </div>
+            </div>
+        </div>
+    </div>
+</div>

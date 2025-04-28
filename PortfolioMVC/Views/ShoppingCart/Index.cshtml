@@ -1,0 +1,113 @@
+﻿@model IEnumerable<PortfolioMVC.Models.DTOs.CartItemDto>
+
+@{
+    ViewData["Title"] = "Shopping Cart";
+}
+
+<div class="container py-4">
+    <h1 class="display-4 mb-4">Shopping Cart</h1>
+
+    <div class="row">
+        <div class="col-md-8">
+            <div class="card shadow mb-4 mb-md-0">
+                <div class="card-header bg-light">
+                    <h3 class="mb-0">Cart Items</h3>
+                </div>
+                <div class="card-body">
+                    @if (!Model.Any())
+                    {
+                        <div class="alert alert-info">
+                            <p class="mb-0">Your shopping cart is empty.</p>
+                        </div>
+                        <div class="text-center mt-3">
+                            <a asp-controller="ProductsStore" asp-action="Index" class="btn btn-primary">Continue Shopping</a>
+                        </div>
+                    }
+                    else
+                    {
+                        <div class="table-responsive">
+                            <table class="table table-hover">
+                                <thead class="table-light">
+                                    <tr>
+                                        <th>Product</th>
+                                        <th>Price</th>
+                                        <th>Quantity</th>
+                                        <th>Total</th>
+                                        <th>Actions</th>
+                                    </tr>
+                                </thead>
+                                <tbody>
+                                    @foreach (var item in Model)
+                                    {
+                                        <tr>
+                                            <td>
+                                                <div class="d-flex align-items-center">
+                                                    @if (!string.IsNullOrEmpty(item.ProductImageUrl))
+                                                    {
+                                                        <img src="@item.ProductImageUrl" class="me-3" style="width: 50px; height: 50px; object-fit: cover;" alt="@item.ProductName" />
+                                                    }
+                                                    <div>
+                                                        <a asp-controller="ProductsStore" asp-action="Details" asp-route-id="@item.ProductId" class="text-decoration-none">
+                                                            @item.ProductName
+                                                        </a>
+                                                    </div>
+                                                </div>
+                                            </td>
+                                            <td>$@item.Price.ToString("F2")</td>
+                                            <td>
+                                                <form asp-action="UpdateQuantity" method="post" class="d-flex align-items-center">
+                                                    <input type="hidden" name="cartItemId" value="@item.Id" />
+                                                    <input type="number" name="quantity" value="@item.Quantity" min="1" max="100" class="form-control form-control-sm" style="width: 70px;" />
+                                                    <button type="submit" class="btn btn-sm btn-outline-secondary ms-2">Update</button>
+                                                </form>
+                                            </td>
+                                            <td>$@item.TotalPrice.ToString("F2")</td>
+                                            <td>
+                                                <form asp-action="RemoveFromCart" method="post">
+                                                    <input type="hidden" name="cartItemId" value="@item.Id" />
+                                                    <button type="submit" class="btn btn-sm btn-outline-danger">Remove</button>
+                                                </form>
+                                            </td>
+                                        </tr>
+                                    }
+                                </tbody>
+                            </table>
+                        </div>
+
+                        <div class="d-flex justify-content-between mt-4">
+                            <form asp-action="ClearCart" method="post">
+                                <button type="submit" class="btn btn-outline-danger">Clear Cart</button>
+                            </form>
+                            <a asp-controller="ProductsStore" asp-action="Index" class="btn btn-outline-secondary">Continue Shopping</a>
+                        </div>
+                    }
+                </div>
+            </div>
+        </div>
+
+        @if (Model.Any())
+        {
+            <div class="col-md-4">
+                <div class="card shadow">
+                    <div class="card-header bg-light">
+                        <h3 class="mb-0">Order Summary</h3>
+                    </div>
+                    <div class="card-body">
+                        <div class="d-flex justify-content-between mb-3">
+                            <span>Subtotal:</span>
+                            <span>$@ViewBag.CartTotal.ToString("F2")</span>
+                        </div>
+                        <hr />
+                        <div class="d-flex justify-content-between mb-4">
+                            <span class="fw-bold">Total:</span>
+                            <span class="fw-bold">$@ViewBag.CartTotal.ToString("F2")</span>
+                        </div>
+                        <div class="d-grid">
+                            <a asp-controller="Orders" asp-action="Checkout" class="btn btn-primary">Proceed to Checkout</a>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        }
+    </div>
+</div>

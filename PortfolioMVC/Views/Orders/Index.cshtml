@@ -1,0 +1,76 @@
+﻿@model IEnumerable<PortfolioMVC.Models.DTOs.OrderDto>
+
+@{
+    ViewData["Title"] = "My Orders";
+}
+
+<div class="container py-4">
+    <h1 class="display-4 mb-4">My Orders</h1>
+
+    <div class="card shadow">
+        <div class="card-body">
+            @if (!Model.Any())
+            {
+                <div class="alert alert-info">
+                    <p class="mb-0">You don't have any orders yet.</p>
+                </div>
+                <div class="text-center mt-3">
+                    <a asp-controller="ProductsStore" asp-action="Index" class="btn btn-primary">Start Shopping</a>
+                </div>
+            }
+            else
+            {
+                <div class="table-responsive">
+                    <table class="table table-hover">
+                        <thead class="table-light">
+                            <tr>
+                                <th>Order Number</th>
+                                <th>Date</th>
+                                <th>Total</th>
+                                <th>Status</th>
+                                <th>Actions</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            @foreach (var order in Model)
+                            {
+                                <tr>
+                                    <td>@order.OrderNumber</td>
+                                    <td>@order.OrderDate.ToString("MMM dd, yyyy HH:mm")</td>
+                                    <td>$@order.TotalAmount.ToString("F2")</td>
+                                    <td>
+                                        @{
+                                            var statusClass = order.Status switch
+                                            {
+                                                PortfolioMVC.Models.Enums.OrderStatus.Pending => "bg-warning",
+                                                PortfolioMVC.Models.Enums.OrderStatus.Processing => "bg-primary",
+                                                PortfolioMVC.Models.Enums.OrderStatus.Completed => "bg-success",
+                                                PortfolioMVC.Models.Enums.OrderStatus.Cancelled => "bg-danger",
+                                                _ => "bg-secondary"
+                                            };
+                                        }
+                                        <span class="badge @statusClass">@order.Status</span>
+                                    </td>
+                                    <td>
+                                        <a asp-action="Details" asp-route-id="@order.Id" class="btn btn-sm btn-outline-primary">
+                                            <i class="bi bi-eye"></i> View
+                                        </a>
+                                    </td>
+                                </tr>
+                            }
+                        </tbody>
+                    </table>
+                </div>
+            }
+        </div>
+    </div>
+
+    <div class="d-flex justify-content-between mt-4">
+        <a asp-controller="ProductsStore" asp-action="Index" class="btn btn-primary">
+            <i class="bi bi-cart"></i> Continue Shopping
+        </a>
+        <a asp-controller="Dashboard" asp-action="Index" class="btn btn-outline-secondary">
+            <i class="bi bi-speedometer2"></i> Go to Dashboard
+        </a>
+    </div>
+</div>

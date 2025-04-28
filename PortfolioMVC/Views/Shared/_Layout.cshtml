@@ -74,6 +74,34 @@
                                 <a class="nav-link" asp-controller="Account" asp-action="Register"><i class="bi bi-person-plus"></i> Register</a>
                             </li>
                         }
+
+                        @if (User.Identity.IsAuthenticated)
+                        {
+                            <li class="nav-item dropdown">
+                                <a class="nav-link dropdown-toggle" href="#" id="shopDropdown" role="button" data-bs-toggle="dropdown" aria-expanded="false">
+                                    <i class="bi bi-shop"></i> Shop
+                                </a>
+                                <ul class="dropdown-menu" aria-labelledby="shopDropdown">
+                                    <li><a class="dropdown-item" asp-controller="ProductsStore" asp-action="Index">Browse Products</a></li>
+                                    <li><a class="dropdown-item" asp-controller="ShoppingCart" asp-action="Index">Shopping Cart</a></li>
+                                    <li><a class="dropdown-item" asp-controller="Orders" asp-action="Index">My Orders</a></li>
+                                    <li><hr class="dropdown-divider"></li>
+                                    <li><a class="dropdown-item" asp-controller="ProductsStore" asp-action="MyProducts">My Products</a></li>
+                                    @if (User.IsInRole("Admin"))
+                                    {
+                                        <li><hr class="dropdown-divider"></li>
+                                        <li><a class="dropdown-item" asp-controller="ProductsStore" asp-action="ManageProducts">Manage Products</a></li>
+                                        <li><a class="dropdown-item" asp-controller="Orders" asp-action="ManageOrders">Manage Orders</a></li>
+                                    }
+                                </ul>
+                            </li>
+                        }
+                        else
+                        {
+                            <li class="nav-item">
+                                <a class="nav-link" asp-controller="ProductsStore" asp-action="Index"><i class="bi bi-shop"></i> Store</a>
+                            </li>
+                        }
                     </ul>
                 </div>
             </div>

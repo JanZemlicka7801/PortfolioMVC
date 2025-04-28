@@ -1,0 +1,111 @@
+﻿@model IEnumerable<PortfolioMVC.Models.DTOs.ProductDto>
+
+@{
+    ViewData["Title"] = "My Products";
+}
+
+<div class="container py-4">
+    <div class="d-flex justify-content-between align-items-center mb-4">
+        <h1 class="display-4">My Products</h1>
+        <a asp-action="Create" class="btn btn-primary">
+            <i class="bi bi-plus-circle"></i> Add New Product
+        </a>
+    </div>
+
+    <div class="card shadow">
+        <div class="card-body">
+            @if (!Model.Any())
+            {
+                <div class="alert alert-info">
+                    <p class="mb-0">You haven't created any products yet.</p>
+                </div>
+                <div class="text-center mt-3">
+                    <a asp-action="Create" class="btn btn-primary">Create Your First Product</a>
+                </div>
+            }
+            else
+            {
+                <div class="table-responsive">
+                    <table class="table table-hover">
+                        <thead class="table-light">
+                            <tr>
+                                <th>Name</th>
+                                <th>Price</th>
+                                <th>Category</th>
+                                <th>Availability</th>
+                                <th>Approval Status</th>
+                                <th>Actions</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            @foreach (var product in Model)
+                            {
+                                <tr>
+                                    <td>
+                                        <div class="d-flex align-items-center">
+                                            @if (!string.IsNullOrEmpty(product.ImageUrl))
+                                            {
+                                                <img src="@product.ImageUrl" class="me-2" style="width: 40px; height: 40px; object-fit: cover;" alt="@product.Name" />
+                                            }
+                                            else
+                                            {
+                                                <div class="bg-light me-2 d-flex align-items-center justify-content-center" style="width: 40px; height: 40px;">
+                                                    <i class="bi bi-image text-secondary"></i>
+                                                </div>
+                                            }
+                                            @product.Name
+                                        </div>
+                                    </td>
+                                    <td>$@product.Price.ToString("F2")</td>
+                                    <td>@product.Category</td>
+                                    <td>
+                                        @if (product.IsAvailable)
+                                        {
+                                            <span class="badge bg-success">Available</span>
+                                        }
+                                        else
+                                        {
+                                            <span class="badge bg-danger">Unavailable</span>
+                                        }
+                                    </td>
+                                    <td>
+                                        @if (product.IsApproved)
+                                        {
+                                            <span class="badge bg-success">Approved</span>
+                                        }
+                                        else
+                                        {
+                                            <span class="badge bg-warning text-dark">Pending Approval</span>
+                                        }
+                                    </td>
+                                    <td>
+                                        <div class="btn-group">
+                                            <a asp-action="Details" asp-route-id="@product.Id" class="btn btn-sm btn-outline-info">
+                                                <i class="bi bi-eye"></i>
+                                            </a>
+                                            <a asp-action="Edit" asp-route-id="@product.Id" class="btn btn-sm btn-outline-primary">
+                                                <i class="bi bi-pencil"></i>
+                                            </a>
+                                            <a asp-action="Delete" asp-route-id="@product.Id" class="btn btn-sm btn-outline-danger">
+                                                <i class="bi bi-trash"></i>
+                                            </a>
+                                        </div>
+                                    </td>
+                                </tr>
+                            }
+                        </tbody>
+                    </table>
+                </div>
+            }
+        </div>
+    </div>
+
+    <div class="d-flex justify-content-between mt-4">
+        <a asp-action="Index" class="btn btn-outline-secondary">
+            <i class="bi bi-arrow-left"></i> Back to Store
+        </a>
+        <a asp-controller="Dashboard" asp-action="Index" class="btn btn-outline-primary">
+            <i class="bi bi-speedometer2"></i> Go to Dashboard
+        </a>
+    </div>
+</div>

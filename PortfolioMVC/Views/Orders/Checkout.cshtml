@@ -1,0 +1,82 @@
+﻿@{
+    ViewData["Title"] = "Checkout";
+    var cartItems = ViewBag.CartItems as IEnumerable<PortfolioMVC.Models.DTOs.CartItemDto>;
+    var cartTotal = ViewBag.CartTotal as decimal?;
+}
+
+<div class="container py-4">
+    <h1 class="display-4 mb-4">Checkout</h1>
+
+    <div class="row">
+        <div class="col-md-8">
+            <div class="card shadow mb-4">
+                <div class="card-header bg-light">
+                    <h3 class="mb-0">Order Summary</h3>
+                </div>
+                <div class="card-body">
+                    <div class="table-responsive">
+                        <table class="table table-hover">
+                            <thead class="table-light">
+                                <tr>
+                                    <th>Product</th>
+                                    <th>Price</th>
+                                    <th>Quantity</th>
+                                    <th>Total</th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                @foreach (var item in cartItems)
+                                {
+                                    <tr>
+                                        <td>
+                                            <div class="d-flex align-items-center">
+                                                @if (!string.IsNullOrEmpty(item.ProductImageUrl))
+                                                {
+                                                    <img src="@item.ProductImageUrl" class="me-3" style="width: 50px; height: 50px; object-fit: cover;" alt="@item.ProductName" />
+                                                }
+                                                <div>
+                                                    @item.ProductName
+                                                </div>
+                                            </div>
+                                        </td>
+                                        <td>$@item.Price.ToString("F2")</td>
+                                        <td>@item.Quantity</td>
+                                        <td>$@item.TotalPrice.ToString("F2")</td>
+                                    </tr>
+                                }
+                            </tbody>
+                        </table>
+                    </div>
+
+                    <div class="d-flex justify-content-end mt-3">
+                        <div class="text-end">
+                            <p class="mb-1">Subtotal: <span class="fw-bold">$@cartTotal?.ToString("F2")</span></p>
+                            <p class="mb-0">Total: <span class="fw-bold fs-4">$@cartTotal?.ToString("F2")</span></p>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <div class="col-md-4">
+            <div class="card shadow">
+                <div class="card-header bg-light">
+                    <h3 class="mb-0">Complete Your Order</h3>
+                </div>
+                <div class="card-body">
+                    <form asp-action="CreateOrder" method="post">
+                        <div class="alert alert-info mb-4">
+                            <p class="mb-0">Cominh very soon</p>
+                        </div>
+
+
+                        <div class="d-grid gap-2">
+                            <button type="submit" class="btn btn-primary btn-lg">Place Order</button>
+                            <a asp-controller="ShoppingCart" asp-action="Index" class="btn btn-outline-secondary">Return to Cart</a>
+                        </div>
+                    </form>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
