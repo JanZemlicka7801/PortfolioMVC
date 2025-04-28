@@ -84,6 +84,29 @@ namespace PortfolioMVC.Service
             return MapToDetailedDto(order);
         }
 
+
+        public async Task<OrderDto?> GetOrderDetailsForAdminAsync(int orderId)
+        {
+            var order = await _context.Orders
+                .Include(o => o.OrderItems)
+                .ThenInclude(oi => oi.Product)
+                .Include(o => o.User) 
+                .FirstOrDefaultAsync(o => o.Id == orderId);
+
+            if (order == null)
+                return null;
+
+            var orderDto = MapToDetailedDto(order);
+
+            if (order.User != null)
+            {
+                orderDto.UserName = order.User.Name;
+            }
+
+            return orderDto;
+        }
+
+
         public async Task<IEnumerable<OrderDto>> GetAllOrdersAsync()
         {
             var orders = await _context.Orders
@@ -119,6 +142,7 @@ namespace PortfolioMVC.Service
                 OrderNumber = order.OrderNumber,
                 OrderDate = order.OrderDate,
                 UserId = order.UserId,
+                UserName = order.User?.Name ?? "Unknown",
                 TotalAmount = order.TotalAmount,
                 Status = order.Status
             };

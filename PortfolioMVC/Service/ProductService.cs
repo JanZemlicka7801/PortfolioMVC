@@ -29,6 +29,20 @@ namespace PortfolioMVC.Service
             return products.Select(MapToDto);
         }
 
+        public async Task<Dictionary<PortfolioMVC.Models.Enums.ProductCategory, int>> GetProductCategoryCountsAsync()
+        {
+            var products = await _context.Products
+                .Where(p => p.IsApproved && p.IsAvailable)
+                .ToListAsync();
+
+            return products
+                .GroupBy(p => p.Category)
+                .ToDictionary(
+                    g => g.Key,
+                    g => g.Count()
+                );
+        }
+
         public async Task<ProductDto?> GetProductByIdAsync(int id)
         {
             var product = await _context.Products

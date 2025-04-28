@@ -2,10 +2,10 @@
 
 public enum ProductCategory
 {
-    ProjectTemplate,
-    DesignAsset,
-    ConsultingService,
-    PremiumFeature,
-    TrainingMaterial,
+    WebApplication,
+    MobileApp,
+    GameProject,
+    ResearchProject,
+    AIModel,
     Other
 }

@@ -23,12 +23,23 @@ public class OrdersController : Controller
         return View(orders);
     }
 
+
     // GET: Orders/Details/5
     public async Task<IActionResult> Details(int id)
     {
         var userId = User.FindFirstValue(ClaimTypes.NameIdentifier);
-        var order = await _orderService.GetOrderDetailsAsync(id, userId);
 
+        if (User.IsInRole("Admin"))
+        {
+            var adminOrderView = await _orderService.GetOrderDetailsForAdminAsync(id);
+            if (adminOrderView == null)
+            {
+                return NotFound();
+            }
+            return View(adminOrderView);
+        }
+
+        var order = await _orderService.GetOrderDetailsAsync(id, userId);
         if (order == null)
         {
             return NotFound();

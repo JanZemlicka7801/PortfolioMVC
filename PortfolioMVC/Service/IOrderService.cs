@@ -1,4 +1,5 @@
-﻿using PortfolioMVC.Models.DTOs;
+﻿
+using PortfolioMVC.Models.DTOs;
 
 namespace PortfolioMVC.Service
 {
@@ -7,6 +8,7 @@ namespace PortfolioMVC.Service
         Task<OrderDto> CreateOrderAsync(string userId, string cartId);
         Task<IEnumerable<OrderDto>> GetUserOrdersAsync(string userId);
         Task<OrderDto?> GetOrderDetailsAsync(int orderId, string userId);
+        Task<OrderDto?> GetOrderDetailsForAdminAsync(int orderId);
         Task<IEnumerable<OrderDto>> GetAllOrdersAsync();
         Task<bool> UpdateOrderStatusAsync(int orderId, Models.Enums.OrderStatus status);
     }

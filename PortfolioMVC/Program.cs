@@ -2,6 +2,7 @@ using Microsoft.AspNetCore.Identity;
 using Microsoft.EntityFrameworkCore;
 using PortfolioMVC.Data;
 using PortfolioMVC.Models.entities;
+using PortfolioMVC.Service;
 using PortfolioMVC.Services;
 
 var builder = WebApplication.CreateBuilder(args);
@@ -12,7 +13,6 @@ builder.Services.AddDbContext<AppDbContext>(opt =>
 
 builder.Services.AddIdentity<AppUser, IdentityRole>(options =>
 {
-    // Configured the password to be 12 characters and needs to contain digits as below
     options.Password.RequireDigit = true;
     options.Password.RequiredLength = 12;
     options.Password.RequireUppercase = true;
@@ -51,7 +51,7 @@ builder.Services.AddScoped<IProductService, ProductService>();
 builder.Services.AddScoped<ICartService, CartService>();
 builder.Services.AddScoped<IOrderService, OrderService>();
 
-
+// Cofigure authentication cookie
 builder.Services.ConfigureApplicationCookie(options =>
 {
     options.LoginPath = "/Account/Login";
@@ -61,12 +61,12 @@ builder.Services.ConfigureApplicationCookie(options =>
     options.ExpireTimeSpan = TimeSpan.FromHours(1);
 });
 
-
+// Add services to the container.
 builder.Services.AddControllersWithViews();
 
 var app = builder.Build();
 
-
+// Configure the HTTP request pipeline.
 if (!app.Environment.IsDevelopment())
 {
     app.UseExceptionHandler("/Home/Error");

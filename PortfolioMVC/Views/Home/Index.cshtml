@@ -4,12 +4,12 @@
 
 <div class="container py-5">
     <div class="row align-items-center mb-5">
-        <div class="col-lg-6">
+        <div class="col-lg-8 mx-auto text-center">
             <h1 class="display-3 fw-bold mb-3">Portfolio Management System</h1>
             <p class="lead mb-4">
                 Simplify your project management with our comprehensive portfolio management system. Track projects, manage team members, and monitor progress all in one place.
             </p>
-            <div class="d-grid gap-2 d-md-flex">
+            <div class="d-grid gap-2 d-md-flex justify-content-center">
                 @if (User.Identity.IsAuthenticated)
                 {
                     <a asp-controller="Dashboard" asp-action="Index" class="btn btn-primary btn-lg px-4 me-md-2">Go to Dashboard</a>
@@ -21,9 +21,6 @@
                     <a asp-controller="Account" asp-action="Register" class="btn btn-outline-secondary btn-lg px-4">Register</a>
                 }
             </div>
-        </div>
-        <div class="col-lg-6 mt-5 mt-lg-0 text-center">
-            <img src="https://i.postimg.cc/3wsxWZQc/2-C5511-CC-47-BD-4552-8-AE1-AA3-A18-FDDD65.png" alt="Portfolio Management Dashboard" class="img-fluid rounded shadow" />
         </div>
     </div>
 
@@ -74,53 +71,53 @@
 
     <div class="row align-items-center mb-5">
         <div class="col-lg-6">
-            <h2 class="display-5 fw-bold mb-3">Visit Our Store</h2>
+            <h2 class="display-5 fw-bold mb-3">Student Project Marketplace</h2>
             <p class="lead mb-4">
-                Browse our collection of project templates, design assets, and premium features to enhance your portfolio management experience.
+                Discover and share computing projects created by students. From web applications to AI models, find resources to enhance your learning and development.
             </p>
             <div class="d-grid gap-2 d-md-flex">
-                <a asp-controller="ProductsStore" asp-action="Index" class="btn btn-primary btn-lg px-4 me-md-2">Browse Store</a>
+                <a asp-controller="ProductsStore" asp-action="Index" class="btn btn-primary btn-lg px-4 me-md-2">Browse Projects</a>
                 @if (User.Identity.IsAuthenticated)
                 {
-                    <a asp-controller="ProductsStore" asp-action="MyProducts" class="btn btn-outline-secondary btn-lg px-4">My Products</a>
+                    <a asp-controller="ProductsStore" asp-action="Create" class="btn btn-outline-secondary btn-lg px-4">Share Your Project</a>
                 }
                 else
                 {
-                    <a asp-controller="Account" asp-action="Login" class="btn btn-outline-secondary btn-lg px-4">Login to Shop</a>
+                    <a asp-controller="Account" asp-action="Login" class="btn btn-outline-secondary btn-lg px-4">Login to Share</a>
                 }
             </div>
         </div>
-        <div class="col-lg-6 mt-5 mt-lg-0 text-center">
+        <div class="col-lg-6 mt-5 mt-lg-0">
             <div class="row row-cols-2 g-3">
                 <div class="col">
                     <div class="card shadow-sm h-100">
                         <div class="card-body text-center">
-                            <i class="bi bi-file-earmark-code text-primary mb-3" style="font-size: 2.5rem;"></i>
-                            <h5>Project Templates</h5>
+                            <i class="bi bi-globe text-primary mb-3" style="font-size: 2.5rem;"></i>
+                            <h5>Web Applications</h5>
                         </div>
                     </div>
                 </div>
                 <div class="col">
                     <div class="card shadow-sm h-100">
                         <div class="card-body text-center">
-                            <i class="bi bi-palette text-primary mb-3" style="font-size: 2.5rem;"></i>
-                            <h5>Design Assets</h5>
+                            <i class="bi bi-phone text-primary mb-3" style="font-size: 2.5rem;"></i>
+                            <h5>Mobile Apps</h5>
                         </div>
                     </div>
                 </div>
                 <div class="col">
                     <div class="card shadow-sm h-100">
                         <div class="card-body text-center">
-                            <i class="bi bi-lightbulb text-primary mb-3" style="font-size: 2.5rem;"></i>
-                            <h5>Consulting</h5>
+                            <i class="bi bi-controller text-primary mb-3" style="font-size: 2.5rem;"></i>
+                            <h5>Game Projects</h5>
                         </div>
                     </div>
                 </div>
                 <div class="col">
                     <div class="card shadow-sm h-100">
                         <div class="card-body text-center">
-                            <i class="bi bi-star text-primary mb-3" style="font-size: 2.5rem;"></i>
-                            <h5>Premium Features</h5>
+                            <i class="bi bi-robot text-primary mb-3" style="font-size: 2.5rem;"></i>
+                            <h5>AI Models</h5>
                         </div>
                     </div>
                 </div>
@@ -131,7 +128,7 @@
     <div class="text-center mt-5">
         <h2 class="display-6 mb-4">Ready to get started?</h2>
         <p class="lead">
-            Join thousands of organizations that use our portfolio management system to streamline their projects.
+            Join fellow computing students to showcase your projects and collaborate on innovative solutions.
         </p>
         @if (!User.Identity.IsAuthenticated)
         {

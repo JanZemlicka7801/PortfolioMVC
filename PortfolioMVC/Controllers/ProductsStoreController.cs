@@ -16,9 +16,34 @@ namespace PortfolioMVC.Controllers
         }
 
         // GET: ProductsStore
-        public async Task<IActionResult> Index()
+        public async Task<IActionResult> Index(string category)
         {
             var products = await _productService.GetApprovedProductsAsync();
+
+            if (!string.IsNullOrEmpty(category) && category != "All")
+            {
+
+                if (Enum.TryParse<Models.Enums.ProductCategory>(category, out var categoryEnum))
+                {
+                    products = products.Where(p => p.Category == categoryEnum).ToList();
+                }
+            }
+
+
+            ViewBag.SelectedCategory = category ?? "All";
+
+ 
+            var categories = Enum.GetValues(typeof(Models.Enums.ProductCategory))
+                .Cast<Models.Enums.ProductCategory>()
+                .Select(c => new
+                {
+                    Name = c.ToString(),
+                    Count = products.Count(p => p.Category == c)
+                })
+                .ToList();
+
+            ViewBag.Categories = categories;
+
             return View(products);
         }
 
@@ -26,7 +51,15 @@ namespace PortfolioMVC.Controllers
         public async Task<IActionResult> Details(int id)
         {
             var product = await _productService.GetProductByIdAsync(id);
-            if (product == null || !product.IsApproved)
+            if (product == null)
+            {
+                return NotFound();
+            }
+
+            var userId = User.FindFirstValue(ClaimTypes.NameIdentifier);
+            if (!product.IsApproved &&
+                product.CreatedById != userId &&
+                !User.IsInRole("Admin"))
             {
                 return NotFound();
             }
@@ -183,7 +216,7 @@ namespace PortfolioMVC.Controllers
             return View(products);
         }
 
-        // GET: ProductsStore/ManageProducts (Admin only)
+        // GET: ProductsStore/ManageProducts 
         [Authorize(Roles = "Admin")]
         public async Task<IActionResult> ManageProducts()
         {
@@ -191,7 +224,7 @@ namespace PortfolioMVC.Controllers
             return View(products);
         }
 
-        // POST: ProductsStore/Approve/5 (Admin only)
+        // POST: ProductsStore/Approve/5
         [Authorize(Roles = "Admin")]
         [HttpPost]
         [ValidateAntiForgeryToken]
@@ -206,5 +239,6 @@ namespace PortfolioMVC.Controllers
             await _productService.ApproveProductAsync(id);
             return RedirectToAction(nameof(ManageProducts));
         }
+
     }
 }

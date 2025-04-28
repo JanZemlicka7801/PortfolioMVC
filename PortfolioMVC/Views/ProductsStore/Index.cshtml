@@ -2,6 +2,10 @@
 
 @{
     ViewData["Title"] = "Product Store";
+    var selectedCategory = ViewBag.SelectedCategory as string ?? "All";
+    var categories = ViewBag.Categories as List<dynamic> ?? new List<dynamic>();
+
+    var totalProductCount = Model.Count();
 }
 
 <div class="container py-4">
@@ -34,10 +38,20 @@
                 </div>
                 <div class="card-body">
                     <div class="d-grid gap-2">
-                        <a href="#" class="btn btn-outline-primary">All Products</a>
-                        @foreach (var category in Enum.GetValues(typeof(PortfolioMVC.Models.Enums.ProductCategory)))
+                        <a asp-action="Index" class="btn @(selectedCategory == "All" ? "btn-primary" : "btn-outline-primary") d-flex justify-content-between align-items-center">
+                            <span>All Products</span>
+                            <span class="badge bg-secondary rounded-pill">@totalProductCount</span>
+                        </a>
+
+
+                        @foreach (var category in new[] { "WebApplication", "MobileApp", "GameProject", "ResearchProject", "AIModel", "Other" })
                         {
-                            <a href="#" class="btn btn-outline-secondary">@category</a>
+                            var count = categories.FirstOrDefault(c => c.Name == category)?.Count ?? 0;
+                            <a asp-action="Index" asp-route-category="@category"
+                               class="btn @(selectedCategory == category ? "btn-primary" : "btn-outline-secondary") d-flex justify-content-between align-items-center">
+                                <span>@category</span>
+                                <span class="badge bg-secondary rounded-pill">@count</span>
+                            </a>
                         }
                     </div>
                 </div>
@@ -76,10 +90,18 @@
         </div>
 
         <div class="col-md-9">
+
+            <div class="d-flex justify-content-between align-items-center mb-3">
+                <h3>
+                    @(selectedCategory == "All" ? "All Products" : selectedCategory + " Products")
+                    <small class="text-muted">(@Model.Count() products)</small>
+                </h3>
+            </div>
+
             @if (!Model.Any())
             {
                 <div class="alert alert-info">
-                    <p class="mb-0">No products available at the moment.</p>
+                    <p class="mb-0">No products available in this category.</p>
                 </div>
             }
             else
@@ -138,3 +160,28 @@
         </div>
     </div>
 </div>
+@section Scripts {
+    <script>
+        $(document).ready(function() {
+            $(".category-filter").click(function() {
+                $(".product-grid").addClass("opacity-50");
+
+                $(".product-container").append('<div class="position-absolute top-50 start-50 translate-middle"><div class="spinner-border text-primary" role="status"><span class="visually-hidden">Loading...</span></div></div>');
+            });
+
+            $(".product-card").hover(
+                function() {
+                    $(this).addClass("shadow");
+                    $(this).removeClass("shadow-sm");
+                    $(this).css("transform", "translateY(-5px)");
+                    $(this).css("transition", "transform 0.3s ease-in-out, box-shadow 0.3s ease-in-out");
+                },
+                function() {
+                    $(this).removeClass("shadow");
+                    $(this).addClass("shadow-sm");
+                    $(this).css("transform", "translateY(0)");
+                }
+            );
+        });
+    </script>
+}
