@@ -1,9 +1,9 @@
-﻿using Microsoft.AspNetCore.Authorization;
-using System.Security.Claims;
+﻿using System.Security.Claims;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Mvc;
 using PortfolioMVC.Controllers.Views;
 using PortfolioMVC.Models.entities;
+using PortfolioMVC.Models.Enums;
 
 namespace PortfolioMVC.Controllers;
 
@@ -12,11 +12,16 @@ public class AccountController : Controller
 {
     private readonly UserManager<AppUser> _userManager;
     private readonly SignInManager<AppUser> _signInManager;
+    private readonly RoleManager<IdentityRole> _roleManager;
 
-    public AccountController(UserManager<AppUser> userManager, SignInManager<AppUser> signInManager)
+    public AccountController(
+        UserManager<AppUser> userManager,
+        SignInManager<AppUser> signInManager,
+        RoleManager<IdentityRole> roleManager)
     {
         _userManager = userManager;
         _signInManager = signInManager;
+        _roleManager = roleManager;
     }
 
     [HttpGet]
@@ -53,6 +58,9 @@ public class AccountController : Controller
         var result = await _userManager.CreateAsync(user, model.Password);
         if (result.Succeeded)
         {
+            // Add user to RegisteredUser role
+            await _userManager.AddToRoleAsync(user, "RegisteredUser");
+
             await _signInManager.SignInAsync(user, isPersistent: false);
             return RedirectToAction("Index", "Home");
         }
@@ -66,8 +74,9 @@ public class AccountController : Controller
     }
 
     [HttpGet]
-    public IActionResult Login()
+    public IActionResult Login(string returnUrl = null)
     {
+        ViewData["ReturnUrl"] = returnUrl;
         return View();
     }
 
@@ -84,6 +93,8 @@ public class AccountController : Controller
     [ValidateAntiForgeryToken]
     public async Task<IActionResult> Login(LoginViewModel model, string returnUrl = null)
     {
+        ViewData["ReturnUrl"] = returnUrl;
+
         if (!ModelState.IsValid)
         {
             return View(model);
@@ -115,136 +126,164 @@ public class AccountController : Controller
         return RedirectToAction("Index", "Home");
     }
 
-
-    [Authorize]
-    public async Task<IActionResult> Profile()
-    {
-        var userId = User.FindFirstValue(ClaimTypes.NameIdentifier);
-        var user = await _userManager.FindByIdAsync(userId);
-
-        if (user == null)
-        {
-            return NotFound();
-        }
-
-        var model = new ProfileViewModel
-        {
-            Id = user.Id,
-            Name = user.Name,
-            Email = user.Email,
-            Department = user.Department,
-            UserName = user.UserName
-        };
-
-        return View(model);
-    }
-
-    [Authorize]
-    [HttpGet]
-    public async Task<IActionResult> Settings()
-    {
-        var userId = User.FindFirstValue(ClaimTypes.NameIdentifier);
-        var user = await _userManager.FindByIdAsync(userId);
-
-        if (user == null)
-        {
-            return NotFound();
-        }
-
-        var model = new SettingsViewModel
-        {
-            Name = user.Name,
-            Email = user.Email,
-            Department = user.Department
-        };
-
-        return View(model);
-    }
-
-    [Authorize]
+    /// <summary>
+    /// Initiates an external login request using the specified provider.
+    /// </summary>
+    /// <param name="provider">The name of the external authentication provider (e.g., "Google", "Microsoft").</param>
+    /// <param name="returnUrl">The URL to redirect to after successful authentication.</param>
+    /// <returns>A challenge result that initiates the external authentication flow.</returns>
     [HttpPost]
     [ValidateAntiForgeryToken]
-    public async Task<IActionResult> Settings(SettingsViewModel model)
+    public IActionResult ExternalLogin(string provider, string returnUrl = null)
     {
-        if (!ModelState.IsValid)
+        // Request a redirect to the external login provider
+        var redirectUrl = Url.Action("ExternalLoginCallback", "Account", new { ReturnUrl = returnUrl });
+        var properties = _signInManager.ConfigureExternalAuthenticationProperties(provider, redirectUrl);
+        return Challenge(properties, provider);
+    }
+
+    /// <summary>
+    /// Handles the callback from external authentication providers.
+    /// </summary>
+    /// <param name="returnUrl">The URL to redirect to after successful authentication.</param>
+    /// <param name="remoteError">Error information from the external provider, if any.</param>
+    /// <returns>Redirects to the appropriate page based on authentication result.</returns>
+    [HttpGet]
+    public async Task<IActionResult> ExternalLoginCallback(string returnUrl = null, string remoteError = null)
+    {
+        returnUrl = returnUrl ?? Url.Content("~/");
+
+        if (remoteError != null)
         {
-            return View(model);
+            ModelState.AddModelError(string.Empty, $"Error from external provider: {remoteError}");
+            return RedirectToAction(nameof(Login));
         }
 
-        var userId = User.FindFirstValue(ClaimTypes.NameIdentifier);
-        var user = await _userManager.FindByIdAsync(userId);
 
-        if (user == null)
+        var info = await _signInManager.GetExternalLoginInfoAsync();
+        if (info == null)
         {
-            return NotFound();
+            return RedirectToAction(nameof(Login));
         }
 
-        user.Name = model.Name;
-        user.Department = model.Department;
 
-        if (user.Email != model.Email)
-        {
-            user.Email = model.Email;
-            user.UserName = model.Email;
-            user.NormalizedEmail = model.Email.ToUpper();
-            user.NormalizedUserName = model.Email.ToUpper();
-        }
-
-        var result = await _userManager.UpdateAsync(user);
-
+        var result = await _signInManager.ExternalLoginSignInAsync(info.LoginProvider, info.ProviderKey, isPersistent: false);
         if (result.Succeeded)
         {
-            TempData["SuccessMessage"] = "Your profile has been updated successfully.";
-            return RedirectToAction(nameof(Profile));
+            return RedirectToLocal(returnUrl);
         }
 
-        foreach (var error in result.Errors)
+        var email = info.Principal.FindFirstValue(ClaimTypes.Email);
+        var name = info.Principal.FindFirstValue(ClaimTypes.Name);
+
+        if (email != null)
         {
-            ModelState.AddModelError("", error.Description);
+            var user = await _userManager.FindByEmailAsync(email);
+
+            if (user == null)
+            {
+                user = new AppUser
+                {
+                    UserName = email,
+                    Email = email,
+                    Name = name ?? email.Split('@')[0],
+                    Department = Department.It
+                };
+
+                var createResult = await _userManager.CreateAsync(user);
+                if (createResult.Succeeded)
+                {
+                    await _userManager.AddToRoleAsync(user, "RegisteredUser");
+
+                    createResult = await _userManager.AddLoginAsync(user, info);
+                    if (createResult.Succeeded)
+                    {
+                        await _signInManager.SignInAsync(user, isPersistent: false);
+                        return RedirectToLocal(returnUrl);
+                    }
+                }
+
+                foreach (var error in createResult.Errors)
+                {
+                    ModelState.AddModelError(string.Empty, error.Description);
+                }
+            }
+            else
+            {
+                var addLoginResult = await _userManager.AddLoginAsync(user, info);
+                if (addLoginResult.Succeeded)
+                {
+                    await _signInManager.SignInAsync(user, isPersistent: false);
+                    return RedirectToLocal(returnUrl);
+                }
+            }
         }
 
+
+        ViewData["ReturnUrl"] = returnUrl;
+        ViewData["LoginProvider"] = info.LoginProvider;
+        return View("ExternalLoginConfirmation", new ExternalLoginConfirmationViewModel { Email = email, Name = name });
+    }
+
+    /// <summary>
+    /// Handles the confirmation of an external login after user provides additional required information.
+    /// </summary>
+    /// <param name="model">The view model containing additional user information.</param>
+    /// <param name="returnUrl">The URL to redirect to after successful authentication.</param>
+    /// <returns>Redirects to the appropriate page based on confirmation result.</returns>
+    [HttpPost]
+    [ValidateAntiForgeryToken]
+    public async Task<IActionResult> ExternalLoginConfirmation(ExternalLoginConfirmationViewModel model, string returnUrl = null)
+    {
+        returnUrl = returnUrl ?? Url.Content("~/");
+
+        if (ModelState.IsValid)
+        {
+            var info = await _signInManager.GetExternalLoginInfoAsync();
+            if (info == null)
+            {
+                return RedirectToAction(nameof(Login));
+            }
+
+            var user = new AppUser
+            {
+                UserName = model.Email,
+                Email = model.Email,
+                Name = model.Name,
+                Department = model.Department
+            };
+
+            var result = await _userManager.CreateAsync(user);
+            if (result.Succeeded)
+            {
+                await _userManager.AddToRoleAsync(user, "RegisteredUser");
+
+                result = await _userManager.AddLoginAsync(user, info);
+                if (result.Succeeded)
+                {
+                    await _signInManager.SignInAsync(user, isPersistent: false);
+                    return RedirectToLocal(returnUrl);
+                }
+            }
+
+            foreach (var error in result.Errors)
+            {
+                ModelState.AddModelError(string.Empty, error.Description);
+            }
+        }
+
+        ViewData["ReturnUrl"] = returnUrl;
         return View(model);
     }
 
-    [Authorize]
+    /// <summary>
+    /// Shows access denied page when user tries to access restricted resources.
+    /// </summary>
+    /// <returns>Access denied view.</returns>
     [HttpGet]
-    public IActionResult ChangePassword()
+    public IActionResult AccessDenied()
     {
         return View();
-    }
-
-    [Authorize]
-    [HttpPost]
-    [ValidateAntiForgeryToken]
-    public async Task<IActionResult> ChangePassword(ChangePasswordViewModel model)
-    {
-        if (!ModelState.IsValid)
-        {
-            return View(model);
-        }
-
-        var userId = User.FindFirstValue(ClaimTypes.NameIdentifier);
-        var user = await _userManager.FindByIdAsync(userId);
-
-        if (user == null)
-        {
-            return NotFound();
-        }
-
-        var result = await _userManager.ChangePasswordAsync(user, model.CurrentPassword, model.NewPassword);
-
-        if (result.Succeeded)
-        {
-            TempData["SuccessMessage"] = "Your password has been changed successfully.";
-            return RedirectToAction(nameof(Settings));
-        }
-
-        foreach (var error in result.Errors)
-        {
-            ModelState.AddModelError("", error.Description);
-        }
-
-        return View(model);
     }
 
     /// <summary>

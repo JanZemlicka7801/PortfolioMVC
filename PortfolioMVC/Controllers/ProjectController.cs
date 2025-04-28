@@ -15,14 +15,14 @@ namespace PortfolioMVC.Controllers
         {
             _projectService = projectService;
         }
-        
+
         [HttpGet]
         public async Task<ActionResult<IEnumerable<ProjectDto>>> GetAllProjects()
         {
             var projects = await _projectService.GetAllProjectsAsync();
             return Ok(projects);
         }
-        
+
         [HttpGet("{id}")]
         public async Task<ActionResult<ProjectDto>> GetProject(int id)
         {
@@ -31,7 +31,7 @@ namespace PortfolioMVC.Controllers
                 return NotFound();
             return Ok(project);
         }
-        
+
         [HttpPost]
         public async Task<ActionResult<ProjectDto>> CreateProject([FromBody] ProjectDto projectDto)
         {
@@ -40,7 +40,7 @@ namespace PortfolioMVC.Controllers
             var createdProject = await _projectService.CreateProjectAsync(projectDto);
             return CreatedAtAction(nameof(GetProject), new { id = createdProject.Id }, createdProject);
         }
-        
+
         [HttpPut("{id}")]
         public async Task<IActionResult> UpdateProject(int id, [FromBody] ProjectDto projectDto)
         {
@@ -51,7 +51,7 @@ namespace PortfolioMVC.Controllers
                 return NotFound();
             return NoContent();
         }
-        
+
         [HttpDelete("{id}")]
         public async Task<IActionResult> DeleteProject(int id)
         {
