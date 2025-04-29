@@ -68,7 +68,80 @@
         </div>
     </div>
     <hr class="my-5" />
+    <section id="about-us" class="py-5 bg-light">
+        <div class="container">
+            <div class="text-center mb-5">
+                <h2 class="display-4 fw-bold">
+                    <i class="bi bi-info-circle-fill text-primary me-2"></i>
+                    About Us
+                </h2>
+                <p class="lead mx-auto" style="max-width:600px;">
+                    We’re based in the heart of Dublin, providing students and teams
+                    with the tools they need to manage, showcase and collaborate on
+                    computing projects.
+                </p>
+            </div>
 
+            <div class="row g-4">
+                <div class="col-md-6">
+                    <div class="bg-white rounded-3 shadow-sm p-4 h-100 text-center">
+                        <h5 class="fw-bold mb-3">
+                            <br/>
+                            <br/>
+                            <i class="bi bi-geo-alt-fill text-primary me-2"></i>
+                            Where to Find Us
+                        </h5>
+                        <ul class="list-unstyled mb-4">
+                            <li>Portfolio Management HQ</li>
+                            <li>123 College St</li>
+                            <li>Dublin D02 F632</li>
+                            <li>Ireland</li>
+                        </ul>
+                        <a
+                            href="https://www.google.com/maps/dir/?api=1&destination=53.3498,-6.2603"
+                            target="_blank"
+                            class="btn btn-primary btn-lg"
+                        >
+                            Get Directions
+                        </a>
+                    </div>
+                </div>
+
+                <div class="col-md-6">
+                    <div class="ratio ratio-16x9 rounded-3 shadow-sm">
+                        <div id="map"></div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    @section Scripts {
+    <script
+        async
+        defer
+        src="https://maps.googleapis.com/maps/api/js?key=AIzaSyDTrhtFjgt7g7mNdLZDyaJuRF2PM_ykdQ8&callback=initMap">
+    </script>
+    <script type="text/javascript">
+        function initMap() {
+            const dublinHQ = { lat: 53.3498, lng: -6.2603 };
+
+            const map = new google.maps.Map(document.getElementById('map'), {
+                center: dublinHQ,
+                zoom: 15,
+                mapTypeControl: false
+            });
+
+            new google.maps.Marker({
+                position: dublinHQ,
+                map: map,
+                title: 'Portfolio Management HQ'
+            });
+        }
+    </script>
+    }
+    <hr class="my-5" />
+    
     <div class="row align-items-center mb-5">
         <div class="col-lg-6">
             <h2 class="display-5 fw-bold mb-3">Student Project Marketplace</h2>
